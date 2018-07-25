@@ -1,0 +1,61 @@
+This game is an exercise project for using Java with SQLite.
+Written in IntelliJ IDEA, using SQLite JDBC 3.23.1 library
+
+NOTE: Very early stage, no tests yet
+NOTE: SQLite part of code hasn't been written yet
+
+You're a young alchemist who has knowledge and equipment but lacks a proper licence to produce fine magical items.
+Thus, to make a living you're limited to buy used, junked magical weapons in various state of wear in order to get scrap material for making and selling bootleg magical substances.
+Keep in mind whether the items you're buying are cursed or not, it may be important.
+The goal of this game is to complete as many commissions as possible without getting bankrupt.
+
+Types of Magical Objects in the game:
+- Magical Item - it can be bought from the Market, dismantled into Magical Item Components or sold back to the Market
+- Magical Item Component - it can be salvaged from bought Magical Items or sold back to the Market
+- Magical Material - it can be obtained from Magical Item Components and then used to create Magical Products or sold back to the Market
+- Magical Product - it can be made from Magical Materials according to recipe and then sold for someone who commissioned it
+NOTE: recipes for the Magical Products also include wood that needs to be burned in order to heat it, in the process of making they're treated like any other material, only difference is that the kind of wood doesn't matter
+
+The instances of Magical Objects are held in Scrapchemy_database.db file.
+Player's progress is saved in a separate database file, named after Player's name, specified at the start of the game.
+Goal of making this game as an exercise is to make it read the data from Scrapchemy_database.db file, process it and save to the save file database live.
+
+Pricing mechanics:
+- Magical Item Components, Magical Materials and Magical Products have base prices used to calculate the actual price. Price of Magical Item is based on prices of the Components
+- Calculating price of Magical Item Component:
+    UNACCEPTABLE quality, Q = {1}: price is zero
+    LOW quality, Q = {2, 3, 4}: price = basePrice * (Q/10)
+    MODERATE quality, Q = {5, 6}: price = basePrice * (Q/6)
+    HIGH quality, Q = {7, 8, 9}: price = basePrice * (Q/2)
+    EXCELLENT quality, Q = {10}: price = basePrice * Q
+- Calculating price of Magical Item:
+    price = (basePrice_1 + basePrice_2 + ... + basePrice_n) * (Q_1 + Q_2 + ... + Q_n)/5
+    where n is the number of Components and basePrice_x and Q_x are their respective base prices and qualities.
+- Calculating price of kilogram of a Magical Material:
+    UNACCEPTABLE quality, Q = {1}: price is zero
+    LOW quality, Q = {2, 3, 4}: price = basePrice * (Q/10)
+    MODERATE quality, Q = {5, 6}: price = basePrice * (Q/6)
+    HIGH quality, Q = {7, 8, 9}: price = basePrice * (Q/2)
+    EXCELLENT quality, Q = {10}: price = basePrice * Q
+    (keep in mind that base price of a Material may differ from base price of a Component it's salvaged from and that different Components have different masses)
+- Calculating selling price for Magical Product:
+    price = (materialPrice_1 * mass_1 + materialPrice_2 * mass_2 + ... + materialPrice_n * mass_n) * 2
+- When you sell back a Magical Item, Component or Material to the market, the price is multiplied by 0.6
+
+Quality:
+The exact quality value is not shown to the player, they can only see in which range it is (UNACCEPTABLE, LOW, MODERATE, HIGH or EXCELLENT).
+
+Items at the Market:
+When player is buying an item they can only see its name, overall quality (calculated as an average of each Component's quality), whether it's cursed or not and the price.
+The quality of each Component can be viewed only after purchasing and dismantling the bought Item.
+
+Player's inventory:
+Each Item and Component is kept separately in the inventory.
+The Materials are kept separately depending on its kind, quality and curse status.
+
+Curse:
+If an item is cursed, all of its Components and Materials derived from them are as well.
+Curse is a boolean value, a Magical Object can either be cursed or not cursed.
+When the player creates a Magical Product the smallest amount of cursed Material makes it whole cursed.
+Wood used to burn and heat the made Product also passes on the curse.
+Customers may either require the Product to be cursed, to be pure from any curse or it may not matter for them.
