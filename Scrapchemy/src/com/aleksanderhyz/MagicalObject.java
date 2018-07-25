@@ -70,6 +70,13 @@ public abstract class MagicalObject {
         }
     }
 
+    protected MagicalObject(String name, double price, boolean cursed, Quality quality) {
+        this.name = name;
+        this.price = price;
+        this.cursed = cursed;
+        this.quality = quality;
+    }
+
     public Quality getQuality() {
         return quality;
     }

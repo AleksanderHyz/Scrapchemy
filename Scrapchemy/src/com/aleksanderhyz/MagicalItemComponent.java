@@ -35,4 +35,8 @@ public class MagicalItemComponent extends MagicalObject {
     public Player.TransactionStatus sell(Player player) {
         return null;
     }
+
+    protected MagicalItemComponent(String name, double price, boolean cursed, Quality quality) {
+        super(name, price, cursed, quality);
+    }
 }
