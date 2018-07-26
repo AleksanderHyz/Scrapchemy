@@ -4,10 +4,7 @@ package com.aleksanderhyz;
  *  This class provides methods for connecting to the Scrapchemy_database.db to get data and operate on it in the other classes and to save data to save file database
  */
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class DatabaseConnection {
 
@@ -110,4 +107,19 @@ public class DatabaseConnection {
             System.out.println("Couldn't close connection: " + e.getMessage());
         }
     }
+
+    // method to count rows of a table, needed when rolling Magical Items
+    public int count(String table_name) {
+        String sql_code = "SELECT COUNT(*) AS count FROM [" + table_name +"]";
+        try(Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql_code)){
+            int count = resultSet.getInt("count");
+            return count;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return -1;
+        }
+    }
+
+
 }

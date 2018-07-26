@@ -1,4 +1,4 @@
-This game is an exercise project for using Java with SQLite.
+This game is an exercise project for using Java with SQLite3.
 Written in IntelliJ IDEA, using SQLite JDBC 3.23.1 library
 
 NOTE: Very early stage, no tests yet
