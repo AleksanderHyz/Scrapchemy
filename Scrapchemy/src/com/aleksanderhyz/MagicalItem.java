@@ -45,6 +45,10 @@ public class MagicalItem extends MagicalObject {
     }
 
     protected MagicalItem(String name, double price, boolean cursed, Quality quality) {
+        // choose random item from the list
+        // decide randomly if it's cursed or not
+        // generate components (as cursed or not, randomly choose quality of each)
+        // calculate item price
         super(name, price, cursed, quality);
     }
 }

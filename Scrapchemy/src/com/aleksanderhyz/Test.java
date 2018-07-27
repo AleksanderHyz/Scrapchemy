@@ -16,12 +16,15 @@ public class Test {
         }
 
 
-
         List<Integer> testItems = new ArrayList<>(databaseConnection.getMaterialsFromGroup("1"));
 
-            for (int i = 0; i < testItems.size(); i++) {
-                System.out.println(testItems.get(i));
-            }
+        for (int i = 0; i < testItems.size(); i++) {
+            System.out.println(testItems.get(i));
+        }
+
+
+        System.out.println("=============================");
+        System.out.println(databaseConnection.count(DatabaseConnection.MAGICAL_PRODUCT_TABLE));
 
 
         databaseConnection.close();

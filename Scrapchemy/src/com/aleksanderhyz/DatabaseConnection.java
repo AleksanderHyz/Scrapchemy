@@ -134,7 +134,7 @@ public class DatabaseConnection {
 
     // method to count rows of a table, needed when rolling Magical Items
     public int count(String table_name) {
-        String sqlCode = "SELECT COUNT(*) AS count FROM " + table_name;
+        String sqlCode = "SELECT COUNT(*) AS count FROM [" + table_name +"]";
         try(Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sqlCode)){
 
