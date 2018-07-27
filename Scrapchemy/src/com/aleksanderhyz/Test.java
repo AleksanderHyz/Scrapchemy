@@ -1,5 +1,8 @@
 package com.aleksanderhyz;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Test {
 
     public static void main(String[] args) {
@@ -13,6 +16,12 @@ public class Test {
         }
 
 
+
+        List<Integer> testItems = new ArrayList<>(databaseConnection.getMaterialsFromGroup("1"));
+
+            for (int i = 0; i < testItems.size(); i++) {
+                System.out.println(testItems.get(i));
+            }
 
 
         databaseConnection.close();

@@ -5,6 +5,8 @@ package com.aleksanderhyz;
  */
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseConnection {
 
@@ -82,6 +84,16 @@ public class DatabaseConnection {
 
 
 
+    /* prepared statements: */
+    // count rows
+    public static final String COUNT_ROWS = "SELECT COUNT(*) AS count FROM ?";
+    private PreparedStatement countRows;
+
+    // get Magical Materials from a Group
+    public static final String GET_MATERIALS_FROM_GROUP = "SELECT " + MAGICAL_MATERIAL_ID_COLUMN + " FROM [" + MAGICAL_MATERIAL_TABLE + "] WHERE [" + MAGICAL_MATERIAL_GROUP_COLUMN + "] = ?";
+    private PreparedStatement getMaterialsFromGroup;
+
+
     private Connection connection;
 
 
@@ -90,6 +102,8 @@ public class DatabaseConnection {
     public boolean open() {
         try {
             connection = DriverManager.getConnection(CONNECTION_PATH);
+            countRows = connection.prepareStatement(COUNT_ROWS);
+            getMaterialsFromGroup = connection.prepareStatement(GET_MATERIALS_FROM_GROUP);
 
             return true;
         } catch (SQLException e) {
@@ -100,6 +114,14 @@ public class DatabaseConnection {
 
     public void close() {
         try {
+            if (countRows != null) {
+                countRows.close();
+            }
+
+            if (getMaterialsFromGroup != null) {
+                getMaterialsFromGroup.close();
+            }
+
             if (connection != null) {
                 connection.close();
             }
@@ -110,9 +132,10 @@ public class DatabaseConnection {
 
     // method to count rows of a table, needed when rolling Magical Items
     public int count(String table_name) {
-        String sql_code = "SELECT COUNT(*) AS count FROM [" + table_name +"]";
-        try(Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql_code)){
+        try{
+            countRows.setString(1, table_name);
+            ResultSet resultSet = countRows.executeQuery();
+
             int count = resultSet.getInt("count");
             return count;
         } catch (SQLException e) {
@@ -121,5 +144,21 @@ public class DatabaseConnection {
         }
     }
 
+    // method to create array of IDs of material from specified material group
+    public List<Integer> getMaterialsFromGroup (String groupID) {
+        List<Integer> items = new ArrayList<>();
+        try{
+            getMaterialsFromGroup.setString(1, groupID);
+            ResultSet resultSet = getMaterialsFromGroup.executeQuery();
+            while (resultSet.next()) {
+                items.add(resultSet.getInt(MAGICAL_MATERIAL_ID_INDEX));
+            }
 
+            return items;
+
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
 }
