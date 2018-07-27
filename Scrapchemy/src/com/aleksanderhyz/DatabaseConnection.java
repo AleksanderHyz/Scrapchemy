@@ -86,8 +86,8 @@ public class DatabaseConnection {
 
     /* prepared statements: */
     // count rows
-    public static final String COUNT_ROWS = "SELECT COUNT(*) AS count FROM ?";
-    private PreparedStatement countRows;
+//    public static final String COUNT_ROWS = "SELECT COUNT(*) AS count FROM [?]";
+//    private PreparedStatement countRows;
 
     // get Magical Materials from a Group
     public static final String GET_MATERIALS_FROM_GROUP = "SELECT " + MAGICAL_MATERIAL_ID_COLUMN + " FROM [" + MAGICAL_MATERIAL_TABLE + "] WHERE [" + MAGICAL_MATERIAL_GROUP_COLUMN + "] = ?";
@@ -102,21 +102,23 @@ public class DatabaseConnection {
     public boolean open() {
         try {
             connection = DriverManager.getConnection(CONNECTION_PATH);
-            countRows = connection.prepareStatement(COUNT_ROWS);
+//            countRows = connection.prepareStatement(COUNT_ROWS);
+            // countRows was causing weird errors, so it's performed in count() without using a prepared statement
             getMaterialsFromGroup = connection.prepareStatement(GET_MATERIALS_FROM_GROUP);
 
             return true;
         } catch (SQLException e) {
             System.out.println("Couldn't connect to database: " + e.getMessage());
+            System.out.println(e.getErrorCode());
             return false;
         }
     }
 
     public void close() {
         try {
-            if (countRows != null) {
-                countRows.close();
-            }
+//            if (countRows != null) {
+//                countRows.close();
+//            }
 
             if (getMaterialsFromGroup != null) {
                 getMaterialsFromGroup.close();
@@ -132,9 +134,9 @@ public class DatabaseConnection {
 
     // method to count rows of a table, needed when rolling Magical Items
     public int count(String table_name) {
-        try{
-            countRows.setString(1, table_name);
-            ResultSet resultSet = countRows.executeQuery();
+        String sqlCode = "SELECT COUNT(*) AS count FROM " + table_name;
+        try(Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sqlCode)){
 
             int count = resultSet.getInt("count");
             return count;
