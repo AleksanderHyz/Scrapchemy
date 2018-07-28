@@ -8,6 +8,8 @@ public class MagicalItemComponent extends MagicalObject {
 
     private double basePrice;
     private double mass;
+    private String materialID;
+
 
     @Override
     void calculatePrice() {
@@ -36,7 +38,10 @@ public class MagicalItemComponent extends MagicalObject {
         return null;
     }
 
-    protected MagicalItemComponent(String name, double price, boolean cursed, Quality quality) {
+    protected MagicalItemComponent(String name, double price, boolean cursed, Quality quality, double basePrice, double mass, String materialID) {
         super(name, price, cursed, quality);
+        this.basePrice = basePrice;
+        this.mass = mass;
+        this.materialID = materialID;
     }
 }

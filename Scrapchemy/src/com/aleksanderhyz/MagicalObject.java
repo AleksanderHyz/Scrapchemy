@@ -43,9 +43,14 @@ public abstract class MagicalObject {
         private int value;
         private String visibleQuality;
 
-        private Quality (int value) {
+        Quality (int value) {
             this.value = value;
             this.visibleQuality = setVisibleQualityValue();
+        }
+
+        public static Quality getRandomQuality () {
+            Random random = new Random();
+            return values()[random.nextInt(values().length)];
         }
 
         public int getValue() {

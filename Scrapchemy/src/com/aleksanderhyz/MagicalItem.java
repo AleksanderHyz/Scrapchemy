@@ -70,7 +70,17 @@ public class MagicalItem extends MagicalObject {
             // number of components may vary, with max being 3, if there's less then the remaining ones' _id's are NULL
         for (int i = 2; i < fields.size(); i++) {
             if (fields.get(i) != null) {
-
+                List<Object> componentFields = new ArrayList<>(databaseConnection.getMagicalItemComponentsByID(fields.get(i)));
+                // 1 - _id, 2 - name, 3 - material group, 4 - mass, 5 - base price
+                String componentName = (String) componentFields.get(2);
+                double componentBasePrice = (double) componentFields.get(5);
+                boolean componentCurseStatus = this.cursed;
+                Quality componentQuality = Quality.getRandomQuality();
+                double componentMass = (double) componentFields.get(4);
+                List<String> componentPossibleMaterials = new ArrayList<>(databaseConnection.getMaterialsFromGroup((String)componentFields.get(3)));
+                MagicalItemComponent magicalItemComponent = new MagicalItemComponent(componentName, 0, componentCurseStatus, componentQuality, componentBasePrice,componentMass,);
+                // name, price, cursed, quality, basePrice, mass, material id
+                magicalItemComponent.calculatePrice();
             }
         }
 

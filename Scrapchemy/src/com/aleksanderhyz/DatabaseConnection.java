@@ -174,13 +174,13 @@ public class DatabaseConnection {
     }
 
     // method to create array of IDs of material from specified material group
-    protected List<Integer> getMaterialsFromGroup (String groupID) {
-        List<Integer> items = new ArrayList<>();
+    protected List<String> getMaterialsFromGroup (String groupID) {
+        List<String> items = new ArrayList<>();
         try{
             getMaterialsFromGroup.setString(1, groupID);
             ResultSet resultSet = getMaterialsFromGroup.executeQuery();
             while (resultSet.next()) {
-                items.add(resultSet.getInt(MAGICAL_MATERIAL_ID_INDEX));
+                items.add(resultSet.getString(MAGICAL_MATERIAL_ID_INDEX));
             }
 
             return items;
@@ -211,16 +211,17 @@ public class DatabaseConnection {
     }
 
     // get Magical Item Component fields by _id
-    protected List<String> getMagicalItemComponentsByID (String itemComponentID) {
-        List<String> fields = new ArrayList<>();
+    protected List<Object> getMagicalItemComponentsByID (String itemComponentID) {
+        List<Object> fields = new ArrayList<>();
         try {
             getMagicalItemComponentByID.setString(1, itemComponentID);
             ResultSet resultSet = getMagicalItemComponentByID.executeQuery();
             while (resultSet.next()) {
+                fields.add(resultSet.getString(MAGICAL_ITEM_COMPONENT_ID_INDEX));
                 fields.add(resultSet.getString(MAGICAL_ITEM_COMPONENT_NAME_INDEX));
-                fields.add(resultSet.getString(MAGICAL_ITEM_COMPONENT_MATERIAL_GROUP_INDEX));
+                fields.add(resultSet.getDouble(MAGICAL_ITEM_COMPONENT_MATERIAL_GROUP_INDEX));
                 fields.add(resultSet.getString(MAGICAL_ITEM_COMPONENT_MASS_INDEX));
-                fields.add(resultSet.getString(MAGICAL_ITEM_COMPONENT_BASE_PRICE_INDEX));
+                fields.add(resultSet.getDouble(MAGICAL_ITEM_COMPONENT_BASE_PRICE_INDEX));
             }
             return fields;
         } catch (SQLException e) {
