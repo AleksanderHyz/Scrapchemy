@@ -1,5 +1,7 @@
 package com.aleksanderhyz;
 
+import java.util.Random;
+
 /**
  *  Abstract class to define fields and methods for all kinds of magical objects the player can buy, obtain or sell.
  *  Classes extending this one:
@@ -94,5 +96,14 @@ public abstract class MagicalObject {
     // "buy" operation is in the MagicalItem class, because that's the only kind of MagicalObject the Player can buy
 
     abstract public Player.TransactionStatus sell (Player player);
+
+
+    // choosing random Magical Object index from a specified range
+    // this is to get index number of _id on the ArrayList it was put on previously, ranging from 0 to maximum
+    // it does NOT return the actual _id
+    public int randomIndex (int max) {
+        Random random = new Random();
+        return random.nextInt(max);
+    }
 
 }

@@ -90,8 +90,18 @@ public class DatabaseConnection {
 //    private PreparedStatement countRows;
 
     // get Magical Materials from a Group
-    public static final String GET_MATERIALS_FROM_GROUP = "SELECT " + MAGICAL_MATERIAL_ID_COLUMN + " FROM [" + MAGICAL_MATERIAL_TABLE + "] WHERE [" + MAGICAL_MATERIAL_GROUP_COLUMN + "] = ?";
+    public static final String GET_MATERIALS_FROM_GROUP =
+            "SELECT " + MAGICAL_MATERIAL_ID_COLUMN +
+            " FROM [" + MAGICAL_MATERIAL_TABLE +
+            "] WHERE [" + MAGICAL_MATERIAL_GROUP_COLUMN + "] = ?";
     private PreparedStatement getMaterialsFromGroup;
+
+    // get Magical Item from table by the _id:
+    public static final String GET_MAGICAL_ITEM_BY_ID =
+            "SELECT " + MAGICAL_ITEM_NAME_COLUMN + ", " + MAGICAL_ITEM_COMPONENT1_COLUMN + ", " + MAGICAL_ITEM_COMPONENT2_COLUMN + ", " + MAGICAL_ITEM_COMPONENT3_COLUMN +
+            " FROM [" + MAGICAL_ITEM_TABLE +
+            "] WHERE " + MAGICAL_ITEM_ID_COLUMN + " = ?";
+    private PreparedStatement getMagicalItemByID;
 
 
     private Connection connection;
@@ -105,6 +115,7 @@ public class DatabaseConnection {
 //            countRows = connection.prepareStatement(COUNT_ROWS);
             // countRows was causing weird errors, so it's performed in count() without using a prepared statement
             getMaterialsFromGroup = connection.prepareStatement(GET_MATERIALS_FROM_GROUP);
+            getMagicalItemByID = connection.prepareStatement(GET_MAGICAL_ITEM_BY_ID);
 
             return true;
         } catch (SQLException e) {
@@ -124,6 +135,10 @@ public class DatabaseConnection {
                 getMaterialsFromGroup.close();
             }
 
+            if (getMagicalItemByID != null) {
+                getMagicalItemByID.close();
+            }
+
             if (connection != null) {
                 connection.close();
             }
@@ -133,7 +148,7 @@ public class DatabaseConnection {
     }
 
     // method to count rows of a table, needed when rolling Magical Items
-    public int count(String table_name) {
+    protected int count(String table_name) {
         String sqlCode = "SELECT COUNT(*) AS count FROM [" + table_name +"]";
         try(Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sqlCode)){
@@ -147,7 +162,7 @@ public class DatabaseConnection {
     }
 
     // method to create array of IDs of material from specified material group
-    public List<Integer> getMaterialsFromGroup (String groupID) {
+    protected List<Integer> getMaterialsFromGroup (String groupID) {
         List<Integer> items = new ArrayList<>();
         try{
             getMaterialsFromGroup.setString(1, groupID);
@@ -158,6 +173,23 @@ public class DatabaseConnection {
 
             return items;
 
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    // get Magical Item fields by _id
+    protected List<String> getMagicalItemByID (String itemID) {
+        List<String> fields = new ArrayList<>();
+        try {
+            getMagicalItemByID.setString(1, itemID);
+            ResultSet resultSet = getMagicalItemByID.executeQuery();
+            fields.add(resultSet.getString(1));
+            fields.add(resultSet.getString(2));
+            fields.add(resultSet.getString(3));
+            fields.add(resultSet.getString(4));
+            return fields;
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
             return null;

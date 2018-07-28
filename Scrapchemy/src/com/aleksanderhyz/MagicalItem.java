@@ -44,11 +44,31 @@ public class MagicalItem extends MagicalObject {
         return null;
     }
 
+//    protected MagicalItem(String name, double price, boolean cursed, Quality quality) {
+//        DatabaseConnection databaseConnection = new DatabaseConnection();
+//
+//        databaseConnection.open();
+//
+//        // choose random item from the list
+//            // the item is chosen from the whole table, by _id, from 1 to max
+//        int magicalItemCount = databaseConnection.count(DatabaseConnection.MAGICAL_ITEM_TABLE);
+//        int max = randomIndex(magicalItemCount) + 1;
+//        String itemID = Integer.toString(max);
+//        try {
+//
+//        }
+//        // decide randomly if it's cursed or not
+//        // generate components (as cursed or not, randomly choose quality of each)
+//
+//        databaseConnection.close();
+//
+//        // calculate item price
+//
+//
+//    }
+
+
     protected MagicalItem(String name, double price, boolean cursed, Quality quality) {
-        // choose random item from the list
-        // decide randomly if it's cursed or not
-        // generate components (as cursed or not, randomly choose quality of each)
-        // calculate item price
         super(name, price, cursed, quality);
     }
 }
