@@ -96,12 +96,19 @@ public class DatabaseConnection {
             "] WHERE [" + MAGICAL_MATERIAL_GROUP_COLUMN + "] = ?";
     private PreparedStatement getMaterialsFromGroup;
 
-    // get Magical Item from table by the _id:
+    // get Magical Item from table by _id:
     public static final String GET_MAGICAL_ITEM_BY_ID =
-            "SELECT " + MAGICAL_ITEM_NAME_COLUMN + ", " + MAGICAL_ITEM_COMPONENT1_COLUMN + ", " + MAGICAL_ITEM_COMPONENT2_COLUMN + ", " + MAGICAL_ITEM_COMPONENT3_COLUMN +
+            "SELECT " + "*" +
             " FROM [" + MAGICAL_ITEM_TABLE +
             "] WHERE " + MAGICAL_ITEM_ID_COLUMN + " = ?";
     private PreparedStatement getMagicalItemByID;
+
+    // get Magical Item Component from table by _id:
+    public static final String GET_MAGICAL_ITEM_COMPONENT_BY_ID =
+            "SELECT " + "*" +
+            " FROM [" + MAGICAL_ITEM_COMPONENT_TABLE +
+            "] WHERE " + MAGICAL_ITEM_COMPONENT_ID_COLUMN + " = ?";
+    private PreparedStatement getMagicalItemComponentByID;
 
 
     private Connection connection;
@@ -116,6 +123,7 @@ public class DatabaseConnection {
             // countRows was causing weird errors, so it's performed in count() without using a prepared statement
             getMaterialsFromGroup = connection.prepareStatement(GET_MATERIALS_FROM_GROUP);
             getMagicalItemByID = connection.prepareStatement(GET_MAGICAL_ITEM_BY_ID);
+            getMagicalItemComponentByID = connection.prepareStatement(GET_MAGICAL_ITEM_COMPONENT_BY_ID);
 
             return true;
         } catch (SQLException e) {
@@ -137,6 +145,10 @@ public class DatabaseConnection {
 
             if (getMagicalItemByID != null) {
                 getMagicalItemByID.close();
+            }
+
+            if (getMagicalItemComponentByID != null) {
+                getMagicalItemComponentByID.close();
             }
 
             if (connection != null) {
@@ -185,10 +197,31 @@ public class DatabaseConnection {
         try {
             getMagicalItemByID.setString(1, itemID);
             ResultSet resultSet = getMagicalItemByID.executeQuery();
-            fields.add(resultSet.getString(1));
-            fields.add(resultSet.getString(2));
-            fields.add(resultSet.getString(3));
-            fields.add(resultSet.getString(4));
+            while (resultSet.next()) {
+                fields.add(resultSet.getString(MAGICAL_ITEM_NAME_INDEX));
+                fields.add(resultSet.getString(MAGICAL_ITEM_COMPONENT1_INDEX));
+                fields.add(resultSet.getString(MAGICAL_ITEM_COMPONENT2_INDEX));
+                fields.add(resultSet.getString(MAGICAL_ITEM_COMPONENT3_INDEX));
+            }
+            return fields;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    // get Magical Item Component fields by _id
+    protected List<String> getMagicalItemComponentsByID (String itemComponentID) {
+        List<String> fields = new ArrayList<>();
+        try {
+            getMagicalItemComponentByID.setString(1, itemComponentID);
+            ResultSet resultSet = getMagicalItemComponentByID.executeQuery();
+            while (resultSet.next()) {
+                fields.add(resultSet.getString(MAGICAL_ITEM_COMPONENT_NAME_INDEX));
+                fields.add(resultSet.getString(MAGICAL_ITEM_COMPONENT_MATERIAL_GROUP_INDEX));
+                fields.add(resultSet.getString(MAGICAL_ITEM_COMPONENT_MASS_INDEX));
+                fields.add(resultSet.getString(MAGICAL_ITEM_COMPONENT_BASE_PRICE_INDEX));
+            }
             return fields;
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());

@@ -30,7 +30,7 @@ public class Test {
 
         System.out.println("=============================");
 
-        List<String> testItemFields = new ArrayList<>(databaseConnection.getMagicalItemByID("3"));
+        List<String> testItemFields = new ArrayList<>(databaseConnection.getMagicalItemByID("6"));
 
         for (int i = 0; i < testItemFields.size(); i++) {
             System.out.println(testItemFields.get(i));
