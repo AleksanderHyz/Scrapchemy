@@ -53,6 +53,18 @@ public abstract class MagicalObject {
             return values()[random.nextInt(values().length)];
         }
 
+        public static Quality getQualityByValue (int value) {
+            // value given for the method is calculated earlier as average of 1-10 values using math.ceil() so it's in range 1-10
+            // or retrieved from other object as integer in 1-10 range
+            // so as proper index number it needs to be decreased by 1
+            try {
+                return values()[value - 1];
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println("Couldn't get the quality: " + e.getMessage());
+                return null;
+            }
+        }
+
         public int getValue() {
             return value;
         }
@@ -94,6 +106,10 @@ public abstract class MagicalObject {
 
     public double getPrice() {
         return price;
+    }
+
+    public boolean isCursed() {
+        return cursed;
     }
 
     abstract void calculatePrice();

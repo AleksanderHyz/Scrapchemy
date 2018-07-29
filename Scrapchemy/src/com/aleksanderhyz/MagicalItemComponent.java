@@ -44,4 +44,16 @@ public class MagicalItemComponent extends MagicalObject {
         this.mass = mass;
         this.materialID = materialID;
     }
+
+    public double getBasePrice() {
+        return basePrice;
+    }
+
+    public double getMass() {
+        return mass;
+    }
+
+    public String getMaterialID() {
+        return materialID;
+    }
 }

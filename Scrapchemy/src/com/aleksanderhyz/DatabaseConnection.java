@@ -219,8 +219,8 @@ public class DatabaseConnection {
             while (resultSet.next()) {
                 fields.add(resultSet.getString(MAGICAL_ITEM_COMPONENT_ID_INDEX));
                 fields.add(resultSet.getString(MAGICAL_ITEM_COMPONENT_NAME_INDEX));
-                fields.add(resultSet.getDouble(MAGICAL_ITEM_COMPONENT_MATERIAL_GROUP_INDEX));
-                fields.add(resultSet.getString(MAGICAL_ITEM_COMPONENT_MASS_INDEX));
+                fields.add(resultSet.getString(MAGICAL_ITEM_COMPONENT_MATERIAL_GROUP_INDEX));
+                fields.add(resultSet.getDouble(MAGICAL_ITEM_COMPONENT_MASS_INDEX));
                 fields.add(resultSet.getDouble(MAGICAL_ITEM_COMPONENT_BASE_PRICE_INDEX));
             }
             return fields;
