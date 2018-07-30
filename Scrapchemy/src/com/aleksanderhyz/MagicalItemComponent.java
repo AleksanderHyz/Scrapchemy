@@ -9,6 +9,7 @@ public class MagicalItemComponent extends MagicalObject {
     private double basePrice;
     private double mass;
     private String materialID;
+    private String materialName;
 
 
     @Override
@@ -43,6 +44,16 @@ public class MagicalItemComponent extends MagicalObject {
         this.basePrice = basePrice;
         this.mass = mass;
         this.materialID = materialID;
+    }
+
+    // method to turn a Component which was a part of an Item into a standalone object
+    protected MagicalItemComponent salvageMagicalItemComponent () {
+        DatabaseConnection databaseConnection = new DatabaseConnection();
+        databaseConnection.open();
+        this.materialName = (String) databaseConnection.getMagicalMaterialByID(this.materialID).get(1);
+        // 0 - _id, 1 - name, 2 - group _id, 3 - base price
+        databaseConnection.close();
+        return this;
     }
 
     public double getBasePrice() {

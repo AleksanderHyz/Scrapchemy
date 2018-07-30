@@ -15,17 +15,6 @@ public class MagicalItem extends MagicalObject {
     private List<MagicalItemComponent> components;
 
 
-    @Override
-    void calculatePrice() {
-        double componentPrices = 0;
-        double componentQualities = 0;
-        for (MagicalItemComponent component : components) {
-            componentPrices += component.getPrice();
-            componentQualities += component.getQuality().getValue();
-        }
-        this.price = componentPrices * (componentQualities/5);
-    }
-
     // Player buying a Magical Item from the Market
     public Player.TransactionStatus buy (Player player) {
         if (player.getMarket().contains(this)) {
@@ -52,6 +41,7 @@ public class MagicalItem extends MagicalObject {
         return components;
     }
 
+    // Magical Items can only be generated randomly, using data read from database
     protected MagicalItem() {
         super(null,0,false,null);
         // fields from MagicalObject: name, price, cursed, quality
@@ -68,7 +58,6 @@ public class MagicalItem extends MagicalObject {
         List<String> fields = new ArrayList<>(databaseConnection.getMagicalItemByID(itemID));
         // 0 - name, 1 - component1, 2 - component2, 3 - component3
 
-        this.name = fields.get(0);
 
         // decide randomly if it's cursed or not
         Random curse = new Random();
@@ -106,20 +95,41 @@ public class MagicalItem extends MagicalObject {
         itemQualityValue = (int) Math.ceil(itemQualityValue / this.components.size());
         this.quality = Quality.getQualityByValue(itemQualityValue);
 
+        // build name:
+         // [QUALITY] quality [CURSED/null] [item name]
+        StringBuilder fullName = new StringBuilder(this.quality.getVisibleQuality() + " quality ");
+        if (this.cursed) {
+            fullName.append("CURSED ");
+        }
+        fullName.append(fields.get(0));
+        this.name = fullName.toString();
 
         // calculate item price
-        double itemPrice = 0;
-        int itemComponentsQualityValueSum = 0;
-        for (int i = 0; i < this.components.size(); i++) {
-            itemPrice += this.components.get(i).getBasePrice();
-            itemComponentsQualityValueSum += this.components.get(i).getQuality().getValue();
-        }
-        itemPrice = itemPrice * (itemComponentsQualityValueSum/5);
-        this.price = itemPrice;
-
-
+        calculatePrice();
 
         databaseConnection.close();
+    }
+
+    @Override
+    void calculatePrice() {
+        double componentPrices = 0;
+        double componentQualities = 0;
+        for (MagicalItemComponent component : this.components) {
+            componentPrices += component.getBasePrice();
+            componentQualities += component.getQuality().getValue();
+        }
+        this.price = componentPrices * (componentQualities/5);
+    }
+
+    protected List<MagicalItemComponent> dismantleMagicalItem () {
+        List<MagicalItemComponent> salvagedComponents = new ArrayList<>();
+        for (MagicalItemComponent component : this.components) {
+            if (component.getQuality().getValue() > 0) {
+                // 0 means Quality is UNACCEPTABLE so the component isn't salvaged (gets automatically scrapped)
+                salvagedComponents.add(component.salvageMagicalItemComponent());
+            }
+        }
+        return salvagedComponents;
     }
 
 }

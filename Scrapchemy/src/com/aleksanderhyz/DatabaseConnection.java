@@ -96,6 +96,13 @@ public class DatabaseConnection {
             "] WHERE [" + MAGICAL_MATERIAL_GROUP_COLUMN + "] = ?";
     private PreparedStatement getMaterialsFromGroup;
 
+    // get Magical Material by _id:
+    public static final String GET_MAGICAL_MATERIAL_BY_ID =
+                    "SELECT " + "*" +
+                    " FROM [" + MAGICAL_MATERIAL_TABLE +
+                    "] WHERE [" + MAGICAL_MATERIAL_ID_COLUMN + "] = ?";
+    private PreparedStatement getMagicalMaterialByID;
+
     // get Magical Item from table by _id:
     public static final String GET_MAGICAL_ITEM_BY_ID =
             "SELECT " + "*" +
@@ -122,6 +129,7 @@ public class DatabaseConnection {
 //            countRows = connection.prepareStatement(COUNT_ROWS);
             // countRows was causing weird errors, so it's performed in count() without using a prepared statement
             getMaterialsFromGroup = connection.prepareStatement(GET_MATERIALS_FROM_GROUP);
+            getMagicalMaterialByID = connection.prepareStatement(GET_MAGICAL_MATERIAL_BY_ID);
             getMagicalItemByID = connection.prepareStatement(GET_MAGICAL_ITEM_BY_ID);
             getMagicalItemComponentByID = connection.prepareStatement(GET_MAGICAL_ITEM_COMPONENT_BY_ID);
 
@@ -141,6 +149,10 @@ public class DatabaseConnection {
 
             if (getMaterialsFromGroup != null) {
                 getMaterialsFromGroup.close();
+            }
+
+            if (getMagicalMaterialByID != null) {
+                getMagicalMaterialByID.close();
             }
 
             if (getMagicalItemByID != null) {
@@ -185,6 +197,25 @@ public class DatabaseConnection {
 
             return items;
 
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    // getting Magical Material by the _id
+    protected List<Object> getMagicalMaterialByID(String materialID) {
+        List<Object> fields = new ArrayList<>();
+        try {
+            getMagicalMaterialByID.setString(1, materialID);
+            ResultSet resultSet = getMagicalMaterialByID.executeQuery();
+            while (resultSet.next()) {
+                fields.add(resultSet.getString(MAGICAL_MATERIAL_ID_INDEX));
+                fields.add(resultSet.getString(MAGICAL_MATERIAL_NAME_INDEX));
+                fields.add(resultSet.getString(MAGICAL_MATERIAL_GROUP_INDEX));
+                fields.add(resultSet.getDouble(MAGICAL_MATERIAL_BASE_PRICE_INDEX));
+            }
+            return fields;
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
             return null;

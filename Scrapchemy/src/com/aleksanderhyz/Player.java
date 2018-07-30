@@ -5,6 +5,7 @@ package com.aleksanderhyz;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Player {
@@ -90,6 +91,16 @@ public class Player {
         return market;
     }
 
+    public void addNewItemToMarket () {
+        MagicalItem magicalItem = new MagicalItem();
+        // new random Magical Item is created
+        this.market.add(magicalItem);
+    }
+
+    public void refreshMarket () {
+
+    }
+
 
     // inventory operations:
 
@@ -104,4 +115,5 @@ public class Player {
     public List<MagicalMaterial> getMagicalMaterials() {
         return magicalMaterials;
     }
+
 }

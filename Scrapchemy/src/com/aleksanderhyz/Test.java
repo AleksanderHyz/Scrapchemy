@@ -61,7 +61,7 @@ public class Test {
         MagicalItem testMagicalItem = new MagicalItem();
 
         System.out.println(
-                testMagicalItem.getName() + "\n" +
+                testMagicalItem.getName() + " " + testMagicalItem.hashCode() + "\n" +
                         "price: " + testMagicalItem.getPrice() + "\n" +
                         "cursed: " + testMagicalItem.isCursed() + "\n" +
                         "quality: " + testMagicalItem.getQuality().getValue() + " - " + testMagicalItem.getQuality().getVisibleQuality() + "\n" +
