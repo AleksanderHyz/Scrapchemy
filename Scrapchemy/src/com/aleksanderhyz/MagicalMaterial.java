@@ -2,11 +2,13 @@ package com.aleksanderhyz;
 
 public class MagicalMaterial extends MagicalObject {
 
+    private String id;
     private double basePrice;
     private String materialGroup;
     private double mass;
 
 
+    // calculating price for a kilogram of the material
     @Override
     void calculatePrice() {
         double Q = this.quality.getValue();
@@ -34,7 +36,12 @@ public class MagicalMaterial extends MagicalObject {
         return null;
     }
 
-    protected MagicalMaterial(String name, double price, boolean cursed, Quality quality) {
+    // creating Magical Material from a Magical Item Component
+    public MagicalMaterial(String name, double price, boolean cursed, Quality quality, String id, double basePrice, String materialGroup, double mass) {
         super(name, price, cursed, quality);
+        this.id = id;
+        this.basePrice = basePrice;
+        this.materialGroup = materialGroup;
+        this.mass = mass;
     }
 }

@@ -50,7 +50,7 @@ public class Player {
     public enum TransactionStatus {
         BOUGHT_SUCCESSFULLY,
         SOLD_SUCCESSFULLY,
-        ITEM_NOT_AVAILABLE,
+        OBJECT_NOT_AVAILABLE,
         NOT_ENOUGH_MONEY
     }
 

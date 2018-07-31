@@ -5,7 +5,6 @@ package com.aleksanderhyz;
  * They're built from Magical Item Components, defined by type of Magical Item
  */
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -29,7 +28,7 @@ public class MagicalItem extends MagicalObject {
                 return Player.TransactionStatus.NOT_ENOUGH_MONEY;
             }
         } else {
-            return Player.TransactionStatus.ITEM_NOT_AVAILABLE;
+            return Player.TransactionStatus.OBJECT_NOT_AVAILABLE;
         }
     }
 
@@ -41,10 +40,10 @@ public class MagicalItem extends MagicalObject {
                 player.getMagicalItems().remove(this);
                 return Player.TransactionStatus.SOLD_SUCCESSFULLY;
             }
+            return null;
         } else {
-            return Player.TransactionStatus.ITEM_NOT_AVAILABLE;
+            return Player.TransactionStatus.OBJECT_NOT_AVAILABLE;
         }
-        return null;
     }
 
 

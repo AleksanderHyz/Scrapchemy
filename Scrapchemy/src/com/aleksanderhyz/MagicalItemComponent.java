@@ -1,5 +1,8 @@
 package com.aleksanderhyz;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *  Components are parts the Magical Items are made of
  */
@@ -34,9 +37,18 @@ public class MagicalItemComponent extends MagicalObject {
         }
     }
 
+    // Player selling the component they have in their inventory
     @Override
     public Player.TransactionStatus sell(Player player) {
-        return null;
+        if (player.getMagicalComponents().contains(this)) {
+            if(player.updateWallet((this.price * SELLING_MODIFIER), Player.TransactionType.SELLING)) {
+                player.getMagicalComponents().remove(this);
+                return Player.TransactionStatus.SOLD_SUCCESSFULLY;
+            }
+            return null;
+        } else {
+            return Player.TransactionStatus.OBJECT_NOT_AVAILABLE;
+        }
     }
 
     protected MagicalItemComponent(String name, double price, boolean cursed, Quality quality, double basePrice, double mass, String materialID) {
@@ -66,5 +78,31 @@ public class MagicalItemComponent extends MagicalObject {
 
     public String getMaterialID() {
         return materialID;
+    }
+
+    // processing Component into Magical Material:
+    public MagicalMaterial processMagicalItemComponent (Player player) {
+
+        DatabaseConnection databaseConnection = new DatabaseConnection();
+
+        databaseConnection.open();
+
+        List<Object> materialFields = new ArrayList<>(databaseConnection.getMagicalMaterialByID(this.materialID));
+        // 0 - material _id, 1 - material name, 2 - material group, 3 - base price
+
+        //String name, double price, boolean cursed, Quality quality, String id, double basePrice, String materialGroup, double mass
+        String materialID = (String) materialFields.get(0);
+        String materialName = (String) materialFields.get(1);
+        String materialGroup = (String) materialFields.get(2); // id
+        double materialBasePrice = (Double) materialFields.get(3);
+        boolean materialCursed = this.cursed;
+        Quality materialQuality = this.quality;
+        double materialMass = this.mass;
+        MagicalMaterial magicalMaterial = new MagicalMaterial(materialName, 0, materialCursed, materialQuality, materialID, materialBasePrice, materialGroup, materialMass);
+        magicalMaterial.calculatePrice();
+
+        databaseConnection.close();
+
+        return magicalMaterial;
     }
 }
