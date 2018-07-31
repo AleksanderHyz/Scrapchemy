@@ -19,6 +19,8 @@ public abstract class MagicalObject {
     public static final String HIGH_QUALITY = "HIGH";
     public static final String EXCELLENT_QUALITY = "EXCELLENT";
 
+    public static final double SELLING_MODIFIER = 0.6;
+
     protected String name;
     protected double price;
     protected boolean cursed;

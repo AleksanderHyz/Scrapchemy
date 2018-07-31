@@ -12,6 +12,8 @@ import java.util.Random;
 
 public class MagicalItem extends MagicalObject {
 
+    // when selling Magical Item the Player will get 0.6 of it's price in money
+
     private List<MagicalItemComponent> components;
 
 
@@ -31,8 +33,17 @@ public class MagicalItem extends MagicalObject {
         }
     }
 
+    // Player selling the item they have in their inventory
     @Override
     public Player.TransactionStatus sell(Player player) {
+        if (player.getMagicalItems().contains(this)) {
+            if(player.updateWallet((this.price * SELLING_MODIFIER), Player.TransactionType.SELLING)) {
+                player.getMagicalItems().remove(this);
+                return Player.TransactionStatus.SOLD_SUCCESSFULLY;
+            }
+        } else {
+            return Player.TransactionStatus.ITEM_NOT_AVAILABLE;
+        }
         return null;
     }
 
@@ -124,10 +135,14 @@ public class MagicalItem extends MagicalObject {
     protected List<MagicalItemComponent> dismantleMagicalItem () {
         List<MagicalItemComponent> salvagedComponents = new ArrayList<>();
         for (MagicalItemComponent component : this.components) {
-            if (component.getQuality().getValue() > 0) {
-                // 0 means Quality is UNACCEPTABLE so the component isn't salvaged (gets automatically scrapped)
-                salvagedComponents.add(component.salvageMagicalItemComponent());
-            }
+//            if (component.getQuality().getValue() > 0) {
+//                // 0 means Quality is UNACCEPTABLE so the component isn't salvaged (gets automatically scrapped)
+//                salvagedComponents.add(component.salvageMagicalItemComponent());
+//            }
+            // change: the UNACCEPTABLE quality components will be added to the returned list
+            // and only scrapped when salvaged components are added to Player's inventory
+            // so between these actions information about these components is displayed for the Player
+            salvagedComponents.add(component.salvageMagicalItemComponent());
         }
         return salvagedComponents;
     }

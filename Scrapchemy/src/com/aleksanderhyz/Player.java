@@ -98,7 +98,14 @@ public class Player {
     }
 
     public void refreshMarket () {
-
+        // replace old market (deleting remaining items)
+        // with new list with 3 fresh items
+        List<MagicalItem> newMarket = new ArrayList<>();
+        for (int i = 1; i <= 3; i++) {
+            MagicalItem magicalItem = new MagicalItem();
+            newMarket.add(magicalItem);
+        }
+        this.market = newMarket;
     }
 
 
@@ -114,6 +121,20 @@ public class Player {
 
     public List<MagicalMaterial> getMagicalMaterials() {
         return magicalMaterials;
+    }
+
+    public boolean dismantleMagicalItem(MagicalItem magicalItem) {
+        if (this.magicalItems.contains(magicalItem)) {
+            for (MagicalItemComponent component : magicalItem.dismantleMagicalItem()) {
+                if (component.getQuality().getValue() > 0) {
+                    // 0 means Quality is UNACCEPTABLE so the component isn't salvaged (gets automatically scrapped)
+                    this.magicalComponents.add(component);
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
