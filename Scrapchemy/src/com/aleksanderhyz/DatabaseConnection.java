@@ -117,6 +117,13 @@ public class DatabaseConnection {
             "] WHERE " + MAGICAL_ITEM_COMPONENT_ID_COLUMN + " = ?";
     private PreparedStatement getMagicalItemComponentByID;
 
+    // get Magical Product from table by _id:
+    public static final String GET_MAGICAL_PRODUCT_BY_ID =
+            "SELECT " + "*" +
+            " FROM [" + MAGICAL_PRODUCT_TABLE +
+            "] WHERE " + MAGICAL_PRODUCT_ID_COLUMN + " = ?";
+    private PreparedStatement getMagicalProductByID;
+
 
     private Connection connection;
 
@@ -132,6 +139,7 @@ public class DatabaseConnection {
             getMagicalMaterialByID = connection.prepareStatement(GET_MAGICAL_MATERIAL_BY_ID);
             getMagicalItemByID = connection.prepareStatement(GET_MAGICAL_ITEM_BY_ID);
             getMagicalItemComponentByID = connection.prepareStatement(GET_MAGICAL_ITEM_COMPONENT_BY_ID);
+            getMagicalProductByID = connection.prepareStatement(GET_MAGICAL_PRODUCT_BY_ID);
 
             return true;
         } catch (SQLException e) {
@@ -161,6 +169,10 @@ public class DatabaseConnection {
 
             if (getMagicalItemComponentByID != null) {
                 getMagicalItemComponentByID.close();
+            }
+
+            if (getMagicalProductByID != null) {
+                getMagicalProductByID.close();
             }
 
             if (connection != null) {
@@ -203,7 +215,7 @@ public class DatabaseConnection {
         }
     }
 
-    // getting Magical Material by the _id
+    // getting Magical Material fields by the _id
     protected List<Object> getMagicalMaterialByID(String materialID) {
         List<Object> fields = new ArrayList<>();
         try {
@@ -253,6 +265,30 @@ public class DatabaseConnection {
                 fields.add(resultSet.getString(MAGICAL_ITEM_COMPONENT_MATERIAL_GROUP_INDEX));
                 fields.add(resultSet.getDouble(MAGICAL_ITEM_COMPONENT_MASS_INDEX));
                 fields.add(resultSet.getDouble(MAGICAL_ITEM_COMPONENT_BASE_PRICE_INDEX));
+            }
+            return fields;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    // get Magical Product fields by _id
+    private List<Object> getMagicalProductByID (String productID) {
+        List<Object> fields = new ArrayList<>();
+        try {
+            getMagicalProductByID.setString(1,productID);
+            ResultSet resultSet = getMagicalProductByID.executeQuery();
+            while (resultSet.next()) {
+                fields.add(resultSet.getString(MAGICAL_PRODUCT_ID_INDEX));
+                fields.add(resultSet.getString(MAGICAL_PRODUCT_NAME_INDEX));
+                fields.add(resultSet.getDouble(MAGICAL_PRODUCT_FUEL_MASS_INDEX));
+                fields.add(resultSet.getString(MAGICAL_PRODUCT_MATERIAL1_INDEX));
+                fields.add(resultSet.getDouble(MAGICAL_PRODUCT_MATERIAL1_MASS_INDEX));
+                fields.add(resultSet.getString(MAGICAL_PRODUCT_MATERIAL2_INDEX));
+                fields.add(resultSet.getDouble(MAGICAL_PRODUCT_MATERIAL2_MASS_INDEX));
+                fields.add(resultSet.getString(MAGICAL_PRODUCT_MATERIAL3_INDEX));
+                fields.add(resultSet.getDouble(MAGICAL_PRODUCT_MATERIAL3_MASS_INDEX));
             }
             return fields;
         } catch (SQLException e) {

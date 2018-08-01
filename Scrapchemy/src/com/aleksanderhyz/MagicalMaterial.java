@@ -31,10 +31,11 @@ public class MagicalMaterial extends MagicalObject {
         }
     }
 
-    // sell selected amount of material
-    public Player.TransactionStatus sellSome(Player player, double amount) {
-        return null;
-    }
+//    // sell selected amount of material
+//    public Player.TransactionStatus sellSome(Player player, double amount) {
+//        return null;
+//    }
+    // let's leave that the player can sell only whole batch of the material they have at once or nothing
 
     // selling whole Magical Material from the inventory
     @Override

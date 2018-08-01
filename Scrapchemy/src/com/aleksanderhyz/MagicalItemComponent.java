@@ -62,8 +62,17 @@ public class MagicalItemComponent extends MagicalObject {
     protected MagicalItemComponent salvageMagicalItemComponent () {
         DatabaseConnection databaseConnection = new DatabaseConnection();
         databaseConnection.open();
-        this.materialName = (String) databaseConnection.getMagicalMaterialByID(this.materialID).get(1);
-        // 0 - _id, 1 - name, 2 - group _id, 3 - base price
+        // build name:
+         // [QUALITY] quality [CURSED/null] [material] [item name]
+        StringBuilder fullName = new StringBuilder(this.quality.getVisibleQuality() + " quality ");
+        if (this.cursed) {
+            fullName.append("CURSED ");
+        }
+        // material fields: 0 - _id, 1 - name, 2 - group _id, 3 - base price
+        fullName.append((String) databaseConnection.getMagicalMaterialByID(this.materialID).get(1));
+        fullName.append(this.name);
+        this.name = fullName.toString();
+
         databaseConnection.close();
         return this;
     }
