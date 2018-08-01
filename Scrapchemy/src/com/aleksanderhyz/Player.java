@@ -4,6 +4,8 @@ package com.aleksanderhyz;
  *  Class that defines the game progress
  */
 
+import com.sun.xml.internal.bind.v2.model.core.ID;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -135,6 +137,36 @@ public class Player {
         } else {
             return false;
         }
+    }
+
+    // processing Component from inventory to get new material
+    public boolean processMagicalItemComponent (MagicalItemComponent magicalItemComponent) {
+        if (this.magicalComponents.contains(magicalItemComponent)) {
+            MagicalMaterial salvagedMagicalMaterial = magicalItemComponent.processMagicalItemComponent();
+            this.magicalComponents.remove(magicalItemComponent);
+            // checking if same material of that quality and curse status and is already on the list
+                // if so then just new material's mass is added to it
+            MagicalMaterial searchedMaterial = findMaterial(salvagedMagicalMaterial.getId());
+            if (searchedMaterial != null) {
+                if ((searchedMaterial.getQuality().equals(salvagedMagicalMaterial.getQuality())) && (searchedMaterial.isCursed() == salvagedMagicalMaterial.isCursed())) {
+                    searchedMaterial.addMass(salvagedMagicalMaterial.getMass());
+                }
+            } else {
+                this.magicalMaterials.add(salvagedMagicalMaterial);
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private MagicalMaterial findMaterial (String ID) {
+        for (MagicalMaterial magicalMaterial : this.magicalMaterials) {
+            if (magicalMaterial.getId().equals(ID)) {
+                return magicalMaterial;
+            }
+        }
+        return null;
     }
 
 }

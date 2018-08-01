@@ -81,7 +81,7 @@ public class MagicalItemComponent extends MagicalObject {
     }
 
     // processing Component into Magical Material:
-    public MagicalMaterial processMagicalItemComponent (Player player) {
+    public MagicalMaterial processMagicalItemComponent () {
 
         DatabaseConnection databaseConnection = new DatabaseConnection();
 

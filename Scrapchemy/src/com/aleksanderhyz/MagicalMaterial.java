@@ -31,9 +31,23 @@ public class MagicalMaterial extends MagicalObject {
         }
     }
 
+    // sell selected amount of material
+    public Player.TransactionStatus sellSome(Player player, double amount) {
+        return null;
+    }
+
+    // selling whole Magical Material from the inventory
     @Override
     public Player.TransactionStatus sell(Player player) {
-        return null;
+        if (player.getMagicalMaterials().contains(this)) {
+            if(player.updateWallet((this.price * SELLING_MODIFIER), Player.TransactionType.SELLING)) {
+                player.getMagicalMaterials().remove(this);
+                return Player.TransactionStatus.SOLD_SUCCESSFULLY;
+            }
+            return null;
+        } else {
+            return Player.TransactionStatus.OBJECT_NOT_AVAILABLE;
+        }
     }
 
     // creating Magical Material from a Magical Item Component
@@ -43,5 +57,33 @@ public class MagicalMaterial extends MagicalObject {
         this.basePrice = basePrice;
         this.materialGroup = materialGroup;
         this.mass = mass;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public double getBasePrice() {
+        return basePrice;
+    }
+
+    public String getMaterialGroup() {
+        return materialGroup;
+    }
+
+    // operations on mass
+    public double getMass() {
+        return mass;
+    }
+    protected void addMass (double mass) {
+        this.mass += mass;
+    }
+    protected boolean removeMass (double mass) {
+        if (mass <= this.mass) {
+            this.mass -= mass;
+            return true;
+        } else {
+            return false;
+        }
     }
 }
