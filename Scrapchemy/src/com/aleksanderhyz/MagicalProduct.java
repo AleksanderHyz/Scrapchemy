@@ -27,6 +27,20 @@ public class MagicalProduct extends MagicalObject {
                 return NO_MATTER;
             }
         }
+
+
+        @Override
+        public String toString() {
+            String name;
+            if (this.equals(CURSED)) {
+                name = "CURSED ";
+            } else if (this.equals(CLEAN)) {
+                name = "CLEAN ";
+            } else {
+                name = null;
+            }
+            return name;
+        }
     }
 
 
@@ -56,21 +70,37 @@ public class MagicalProduct extends MagicalObject {
         String productName = (String) fields.get(1);
         double productFuelMass = (double) fields.get(2);
         //getting ingredients from fields numbered 3-8 on the list, the number of them may vary
-        for (int i = 3; i <= 8; i += 2) {
-            
+        List<MagicalProductIngredient> magicalProductIngredients = new ArrayList<>();
+        for (int i = 3; i < 8; i += 2) {
+            if (fields.get(i) != null) {
+                String ingredientID = (String) fields.get(i);
+                double ingredientMass = (Double) fields.get(i+1);
+                MagicalProductIngredient magicalProductIngredient = new MagicalProductIngredient(ingredientID, ingredientMass);
+                magicalProductIngredients.add(magicalProductIngredient);
+            }
         }
 
+        this.fuelMass = productFuelMass;
+        this.ingredients = magicalProductIngredients;
         this.requiredCursedStatus = RequiredCursedStatus.rollStatus();
+        this.commissionNumber = hashCode();
 
+        //generate full name:
+            // [CURSED/CLEAN/null] [name]
+        StringBuilder commissionFullName = new StringBuilder(this.requiredCursedStatus.toString());
+        commissionFullName.append(productName);
+        this.name = commissionFullName.toString();
 
         databaseConnection.close();
-
-        this.commissionNumber = hashCode();
     }
 
     private class MagicalProductIngredient {
         private String materialID;
         private double mass;
-        private double price;
+
+        public MagicalProductIngredient(String materialID, double mass) {
+            this.materialID = materialID;
+            this.mass = mass;
+        }
     }
 }
