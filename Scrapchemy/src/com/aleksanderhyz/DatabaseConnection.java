@@ -274,7 +274,7 @@ public class DatabaseConnection {
     }
 
     // get Magical Product fields by _id
-    private List<Object> getMagicalProductByID (String productID) {
+    protected List<Object> getMagicalProductByID (String productID) {
         List<Object> fields = new ArrayList<>();
         try {
             getMagicalProductByID.setString(1,productID);
