@@ -76,7 +76,7 @@ public class MagicalMaterial extends MagicalObject {
     public double getMass() {
         return mass;
     }
-    protected void addMass (double mass) {
+    private void addMass (double mass) {
         this.mass += mass;
     }
     protected boolean removeMass (double mass) {
@@ -86,5 +86,14 @@ public class MagicalMaterial extends MagicalObject {
         } else {
             return false;
         }
+    }
+
+    // add more material to the lot and calculate its new quality value
+    protected void addMoreMaterial (double addedMaterialMass, MagicalObject.Quality addedMaterialQuality) {
+        //calculate new quality value:
+        double newQualityValue = (this.mass * this.quality.getValue() + addedMaterialMass * addedMaterialQuality.getValue())/(this.mass + addedMaterialMass);
+        int newQualityValueRounded = (int) Math.ceil(newQualityValue);
+        this.quality = Quality.getQualityByValue(newQualityValueRounded);
+        addMass(addedMaterialMass);
     }
 }

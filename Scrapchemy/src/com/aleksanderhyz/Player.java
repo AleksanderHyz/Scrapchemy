@@ -148,16 +148,24 @@ public class Player {
         if (this.magicalComponents.contains(magicalItemComponent)) {
             MagicalMaterial salvagedMagicalMaterial = magicalItemComponent.processMagicalItemComponent();
             this.magicalComponents.remove(magicalItemComponent);
+
             // checking if same material of that quality and curse status and is already on the list
                 // if so then just new material's mass is added to it
-            MagicalMaterial searchedMaterial = filterMaterialByID(salvagedMagicalMaterial.getId());
-            if (searchedMaterial != null) {
-                if ((searchedMaterial.getQuality().equals(salvagedMagicalMaterial.getQuality())) && (searchedMaterial.isCursed() == salvagedMagicalMaterial.isCursed())) {
-                    searchedMaterial.addMass(salvagedMagicalMaterial.getMass());
+            List<MagicalMaterial> searchedMaterial = new ArrayList<>(filterMaterialByID(this.magicalMaterials, salvagedMagicalMaterial.getId()));
+            if (!searchedMaterial.isEmpty()) {
+                searchedMaterial = filterMaterialsByCurse(searchedMaterial, salvagedMagicalMaterial.cursed);
+                if (!searchedMaterial.isEmpty()) {
+                    searchedMaterial = filterMaterialsByQuality(searchedMaterial, salvagedMagicalMaterial.getQuality().getVisibleQuality());
+                    if (!searchedMaterial.isEmpty()) {
+                        // there should be only one material left (with index 0)
+                        searchedMaterial.get(0).addMoreMaterial(salvagedMagicalMaterial.getMass(), salvagedMagicalMaterial.getQuality());
+                        // added salvaged material to the previously existing one of the same visible quality and curse status
+                    }
                 }
             } else {
                 this.magicalMaterials.add(salvagedMagicalMaterial);
             }
+
             return true;
         } else {
             return false;
@@ -185,15 +193,17 @@ public class Player {
         }
         return filteredMaterials;
     }
-        // get materials by quality
-    protected List<MagicalMaterial> filterMaterialsByQuality (List<MagicalMaterial> magicalMaterialsList, boolean requiredCurseStatus) {
+        // get materials by visible quality
+    protected List<MagicalMaterial> filterMaterialsByQuality (List<MagicalMaterial> magicalMaterialsList, String requiredVisibleQuality) {
         List<MagicalMaterial> filteredMaterials = new ArrayList<>();
         for (MagicalMaterial magicalMaterial : magicalMaterialsList) {
-            if (magicalMaterial.isCursed() == requiredCurseStatus) {
+            if (magicalMaterial.getQuality().getVisibleQuality().equals(requiredVisibleQuality)) {
                 filteredMaterials.add(magicalMaterial);
             }
         }
         return filteredMaterials;
     }
+
+
 
 }
