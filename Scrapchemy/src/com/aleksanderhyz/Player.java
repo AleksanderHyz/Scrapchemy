@@ -7,7 +7,6 @@ package com.aleksanderhyz;
 import com.sun.xml.internal.bind.v2.model.core.ID;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Player {
@@ -110,6 +109,11 @@ public class Player {
         this.market = newMarket;
     }
 
+    public void addNewCommission () {
+        MagicalProduct newCommission = new MagicalProduct();
+        this.commissionList.add(newCommission);
+    }
+
 
     // inventory operations:
 
@@ -146,7 +150,7 @@ public class Player {
             this.magicalComponents.remove(magicalItemComponent);
             // checking if same material of that quality and curse status and is already on the list
                 // if so then just new material's mass is added to it
-            MagicalMaterial searchedMaterial = findMaterial(salvagedMagicalMaterial.getId());
+            MagicalMaterial searchedMaterial = filterMaterialByID(salvagedMagicalMaterial.getId());
             if (searchedMaterial != null) {
                 if ((searchedMaterial.getQuality().equals(salvagedMagicalMaterial.getQuality())) && (searchedMaterial.isCursed() == salvagedMagicalMaterial.isCursed())) {
                     searchedMaterial.addMass(salvagedMagicalMaterial.getMass());
@@ -160,13 +164,36 @@ public class Player {
         }
     }
 
-    private MagicalMaterial findMaterial (String ID) {
-        for (MagicalMaterial magicalMaterial : this.magicalMaterials) {
+    //filtering materials from inventory
+        // get materials by ID
+    protected List<MagicalMaterial> filterMaterialByID(List<MagicalMaterial> magicalMaterialsList, String ID) {
+        List<MagicalMaterial> filteredMaterials = new ArrayList<>();
+        for (MagicalMaterial magicalMaterial : magicalMaterialsList) {
             if (magicalMaterial.getId().equals(ID)) {
-                return magicalMaterial;
+                filteredMaterials.add(magicalMaterial);
             }
         }
-        return null;
+        return filteredMaterials;
+    }
+        // get materials by curse status
+    protected List<MagicalMaterial> filterMaterialsByCurse (List<MagicalMaterial> magicalMaterialsList, boolean requiredCurseStatus) {
+        List<MagicalMaterial> filteredMaterials = new ArrayList<>();
+        for (MagicalMaterial magicalMaterial : magicalMaterialsList) {
+            if (magicalMaterial.isCursed() == requiredCurseStatus) {
+                filteredMaterials.add(magicalMaterial);
+            }
+        }
+        return filteredMaterials;
+    }
+        // get materials by quality
+    protected List<MagicalMaterial> filterMaterialsByQuality (List<MagicalMaterial> magicalMaterialsList, boolean requiredCurseStatus) {
+        List<MagicalMaterial> filteredMaterials = new ArrayList<>();
+        for (MagicalMaterial magicalMaterial : magicalMaterialsList) {
+            if (magicalMaterial.isCursed() == requiredCurseStatus) {
+                filteredMaterials.add(magicalMaterial);
+            }
+        }
+        return filteredMaterials;
     }
 
 }

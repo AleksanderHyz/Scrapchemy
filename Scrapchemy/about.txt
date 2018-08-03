@@ -51,7 +51,10 @@ The quality of each Component can be viewed only after purchasing and dismantlin
 
 Player's inventory:
 Each Item and Component is kept separately in the inventory.
-The Materials are kept separately depending on its kind, quality and curse status.
+The Materials are kept separately depending on its kind, visible quality and curse status.
+When more material is added to existing stock of the same curse status and visible quality, the new quality value of new stock is calculated like this:
+newStockQuality = (stockMass * stockQuality + additionMass * additionQuality) / (stockMass + additionMass)
+The new quality value is rounded using Math.ceil function
 
 Curse:
 If an item is cursed, all of its Components and Materials derived from them are as well.

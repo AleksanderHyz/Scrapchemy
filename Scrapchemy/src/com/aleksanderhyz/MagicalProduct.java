@@ -103,4 +103,20 @@ public class MagicalProduct extends MagicalObject {
             this.mass = mass;
         }
     }
+
+    public RequiredCursedStatus getRequiredCursedStatus() {
+        return requiredCursedStatus;
+    }
+
+    public double getFuelMass() {
+        return fuelMass;
+    }
+
+    public List<MagicalProductIngredient> getIngredients() {
+        return ingredients;
+    }
+
+    public int getCommissionNumber() {
+        return commissionNumber;
+    }
 }
