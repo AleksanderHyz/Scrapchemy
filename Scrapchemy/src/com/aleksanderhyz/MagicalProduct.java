@@ -8,6 +8,8 @@ public class MagicalProduct extends MagicalObject {
 
     private RequiredCursedStatus requiredCursedStatus;
     private double fuelMass;
+    // as a fuel there can be used any material from Wood group (that isn't used as an ingredient for this Product)
+        // Wood group _id = 1
     private List<MagicalProductIngredient> ingredients;
     private int commissionNumber;
 

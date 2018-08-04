@@ -204,6 +204,28 @@ public class Player {
         return filteredMaterials;
     }
 
+    // fulfilling commissions:
+    public enum CommissionStatus {
+        COMPLETING_POSSIBLE,
+        LACK_OF_MATERIALS,
+        LACK_OF_NO_CURSED_MATERIALS,
+        COMPLETED_SUCCESSFULLY,
+        PRODUCT_NOT_COMMISSIONED
+    }
 
+    public CommissionStatus fulfillCommission (MagicalProduct commission) {
+        if (this.commissionList.contains(commission)) {
+            List<MagicalMaterial> filteredMaterials = new ArrayList<>();
+            // first filter materials by the curse status if it's CLEAN
+            if (commission.getRequiredCursedStatus().equals(MagicalProduct.RequiredCursedStatus.CLEAN)) {
+                filteredMaterials = filterMaterialsByCurse(this.magicalMaterials, false);
+                if (filteredMaterials.isEmpty()) {
+                    return CommissionStatus.LACK_OF_NO_CURSED_MATERIALS;
+                }
+            }
+        } else {
+            return CommissionStatus.PRODUCT_NOT_COMMISSIONED;
+        }
+    }
 
 }
