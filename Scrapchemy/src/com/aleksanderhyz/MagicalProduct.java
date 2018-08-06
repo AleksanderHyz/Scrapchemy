@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ *  Products created from Magical Materials
+ *  for money and points
+ */
+
 public class MagicalProduct extends MagicalObject {
 
     private RequiredCursedStatus requiredCursedStatus;
@@ -96,6 +101,7 @@ public class MagicalProduct extends MagicalObject {
         databaseConnection.close();
     }
 
+    // inner class for ingredients
     private class MagicalProductIngredient {
         private String materialID;
         private double mass;

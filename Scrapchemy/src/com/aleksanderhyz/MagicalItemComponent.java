@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  *  Components are parts the Magical Items are made of
+ *  They can be sold or processed into Magical Material for later use
  */
 
 public class MagicalItemComponent extends MagicalObject {

@@ -204,28 +204,41 @@ public class Player {
         return filteredMaterials;
     }
 
+
+
     // fulfilling commissions:
+
     public enum CommissionStatus {
         COMPLETING_POSSIBLE,
         LACK_OF_MATERIALS,
         LACK_OF_NO_CURSED_MATERIALS,
         COMPLETED_SUCCESSFULLY,
-        PRODUCT_NOT_COMMISSIONED
+        PRODUCT_NOT_ON_COMMISSION_LIST,
+        ALL_MATERIALS_CURSED
     }
 
-    public CommissionStatus fulfillCommission (MagicalProduct commission) {
-        if (this.commissionList.contains(commission)) {
-            List<MagicalMaterial> filteredMaterials = new ArrayList<>();
-            // first filter materials by the curse status if it's CLEAN
-            if (commission.getRequiredCursedStatus().equals(MagicalProduct.RequiredCursedStatus.CLEAN)) {
-                filteredMaterials = filterMaterialsByCurse(this.magicalMaterials, false);
-                if (filteredMaterials.isEmpty()) {
-                    return CommissionStatus.LACK_OF_NO_CURSED_MATERIALS;
-                }
-            }
-        } else {
-            return CommissionStatus.PRODUCT_NOT_COMMISSIONED;
-        }
-    }
+    // method to check if Player has enough materials in their inventory needed to fulfill a certain commission
+//    public CommissionStatus queryInventoryForCommissionIngredients (MagicalProduct commission) {
+//        if (this.commissionList.contains(commission)) {
+//            List<MagicalMaterial> filteredMaterials = new ArrayList<>();
+//
+//            // filter materials by the curse status if it's CLEAN
+//            if (commission.getRequiredCursedStatus().equals(MagicalProduct.RequiredCursedStatus.CLEAN)) {
+//                filteredMaterials = filterMaterialsByCurse(this.magicalMaterials, false);
+//                if (filteredMaterials.isEmpty()) {
+//                    return CommissionStatus.ALL_MATERIALS_CURSED;
+//                }
+//            }
+//
+//
+//
+//        } else {
+//            return CommissionStatus.PRODUCT_NOT_ON_COMMISSION_LIST;
+//        }
+//    }
+        // change of plans, materials will be checked only after Player chooses them
+        // so determining whether their supplies are enough is on their side, being part of the challenge
+
+
 
 }

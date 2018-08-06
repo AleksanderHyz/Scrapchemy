@@ -1,6 +1,25 @@
 package com.aleksanderhyz;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ *  Materials salvaged from Magical Item Components
+ *  for selling or using to create commissioned Magical Products
+ */
+
 public class MagicalMaterial extends MagicalObject {
+
+    // id's of material groups that can be treated as fuel for making Magical Product
+    public static final String WOOD_GROUP_ID = "1";
+        // as for now the program is working in a way where Wood group is the only accepted fuel
+        // and every place a fuel is required the material is checked for being in Wood group
+        // also the program works on assumption that the used database has Wood group under the "1" _id
+        //
+        // if that was to be changed (as in more material groups to be accepted as fuel)
+        // it would be required to change the code in every place WOOD_GROUP_ID constant is called
+        // and editing the database to have a field for Material Groups determining if it's a fuel or not
+        // as for now it's left like this because there are no plans to introduce any new fuel materials
 
     private String id;
     private double basePrice;
