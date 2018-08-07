@@ -227,6 +227,8 @@ public class Player {
     }
 
     public enum MaterialCheck {
+        RIGHT_MATERIAL,
+        WRONG_MATERIAL,
         MATERIAL_NOT_FOUND,
         NOT_ENOUGH_MATERIAL,
         MATERIAL_CURSED,
@@ -258,7 +260,10 @@ public class Player {
 
     public CommissionStatus fulfillCommission (MagicalProduct commission) {
         if (this.commissionList.contains(commission)) {
-
+            // move all materials from the inventory to a temporary list
+            // in order to delete all chosen materials from it during the process of choosing ingredients
+            // but without deleting them from inventory in case product in the end is not created
+            List<MagicalMaterial> temporaryMaterialList = this.magicalMaterials;
 
 
 
@@ -267,8 +272,29 @@ public class Player {
         }
     }
 
-    private MaterialCheck materialCheck (MagicalProduct magicalProduct, int ingredientIndex /* 0-2, with 3 ingredients being maximum */, MagicalMaterial magicalMaterial) {
-        
+    private MaterialCheck materialCheck (MagicalProduct.MagicalProductIngredient magicalProductIngredient, MagicalMaterial chosenMagicalMaterial, MagicalProduct.RequiredCursedStatus requiredCursedStatus) {
+
+        // first check id
+        if (chosenMagicalMaterial.getId().equals(magicalProductIngredient.getMaterialID())) {
+
+            // if the product's required status is CLEAN then no used material can be cursed
+            if (requiredCursedStatus.equals(MagicalProduct.RequiredCursedStatus.CLEAN)) {
+                if (chosenMagicalMaterial.isCursed()) {
+                    return MaterialCheck.MATERIAL_CURSED;
+                } // if else just go on
+            } // if else just go on
+
+            // checking mass
+            if (chosenMagicalMaterial.getMass() < magicalProductIngredient.getMass()) {
+                return MaterialCheck.NOT_ENOUGH_MATERIAL;
+            }
+
+            // all requirements met
+            return MaterialCheck.RIGHT_MATERIAL;
+
+        } else {
+            return MaterialCheck.WRONG_MATERIAL;
+        }
     }
 
 }

@@ -21,7 +21,6 @@ public class MagicalMaterial extends MagicalObject {
         // and editing the database to have a field for Material Groups determining if it's a fuel or not
         // as for now it's left like this because there are no plans to introduce any new fuel materials
 
-    private String id;
     private double basePrice;
     private String materialGroup;
     private double mass;
@@ -71,9 +70,8 @@ public class MagicalMaterial extends MagicalObject {
     }
 
     // creating Magical Material from a Magical Item Component
-    public MagicalMaterial(String name, double price, boolean cursed, Quality quality, String id, double basePrice, String materialGroup, double mass) {
-        super(name, price, cursed, quality);
-        this.id = id;
+    protected MagicalMaterial(String id, String name, double price, boolean cursed, Quality quality, double basePrice, String materialGroup, double mass) {
+        super(id, name, price, cursed, quality);
         this.basePrice = basePrice;
         this.materialGroup = materialGroup;
         this.mass = mass;

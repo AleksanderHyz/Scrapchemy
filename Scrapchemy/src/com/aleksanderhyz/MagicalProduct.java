@@ -63,15 +63,15 @@ public class MagicalProduct extends MagicalObject {
 
     // generate Magical Product as a new commission:
     protected MagicalProduct() {
-        super(null, 0, false, null);
+        super(null,null, 0, false, null);
         DatabaseConnection databaseConnection = new DatabaseConnection();
         databaseConnection.open();
 
         // choose random product from the database
         int magicalProductCount = databaseConnection.count(DatabaseConnection.MAGICAL_PRODUCT_TABLE);
-        int max = randomIndex(magicalProductCount) + 1;
-        String productID = Integer.toString(max);
-        List<Object> fields = new ArrayList<>(databaseConnection.getMagicalProductByID(productID));
+        int randomId = randomIndex(magicalProductCount) + 1;
+        String productId = Integer.toString(randomId);
+        List<Object> fields = new ArrayList<>(databaseConnection.getMagicalProductByID(productId));
         // 0 - id, 1 - name, 2 - fuel mass,
         // 3 - material1 _id, 4 - material1 mass, 5 - material2 _id, 6 - material2 mass, 7 - material3 _id, 8 - material3 mass
         String productName = (String) fields.get(1);
@@ -98,11 +98,13 @@ public class MagicalProduct extends MagicalObject {
         commissionFullName.append(productName);
         this.name = commissionFullName.toString();
 
+        this.id = productId;
+
         databaseConnection.close();
     }
 
     // inner class for ingredients
-    private class MagicalProductIngredient {
+    protected class MagicalProductIngredient {
         private String materialID;
         private double mass;
         private String name;

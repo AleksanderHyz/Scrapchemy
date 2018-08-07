@@ -21,6 +21,7 @@ public abstract class MagicalObject {
 
     public static final double SELLING_MODIFIER = 0.6;
 
+    protected String id;
     protected String name;
     protected double price;
     protected boolean cursed;
@@ -91,7 +92,8 @@ public abstract class MagicalObject {
         }
     }
 
-    protected MagicalObject(String name, double price, boolean cursed, Quality quality) {
+    protected MagicalObject(String id, String name, double price, boolean cursed, Quality quality) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.cursed = cursed;

@@ -52,8 +52,8 @@ public class MagicalItemComponent extends MagicalObject {
         }
     }
 
-    protected MagicalItemComponent(String name, double price, boolean cursed, Quality quality, double basePrice, double mass, String materialID) {
-        super(name, price, cursed, quality);
+    protected MagicalItemComponent(String id, String name, double price, boolean cursed, Quality quality, double basePrice, double mass, String materialID) {
+        super(id, name, price, cursed, quality);
         this.basePrice = basePrice;
         this.mass = mass;
         this.materialID = materialID;
@@ -103,12 +103,12 @@ public class MagicalItemComponent extends MagicalObject {
         //String name, double price, boolean cursed, Quality quality, String id, double basePrice, String materialGroup, double mass
         String materialID = (String) materialFields.get(0);
         String materialName = (String) materialFields.get(1);
-        String materialGroup = (String) materialFields.get(2); // id
+        String materialGroup = (String) materialFields.get(2); // group id
         double materialBasePrice = (Double) materialFields.get(3);
         boolean materialCursed = this.cursed;
         Quality materialQuality = this.quality;
         double materialMass = this.mass;
-        MagicalMaterial magicalMaterial = new MagicalMaterial(materialName, 0, materialCursed, materialQuality, materialID, materialBasePrice, materialGroup, materialMass);
+        MagicalMaterial magicalMaterial = new MagicalMaterial(materialID, materialName, 0, materialCursed, materialQuality, materialBasePrice, materialGroup, materialMass);
         magicalMaterial.calculatePrice();
 
         databaseConnection.close();

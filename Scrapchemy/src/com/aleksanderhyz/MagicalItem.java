@@ -53,7 +53,7 @@ public class MagicalItem extends MagicalObject {
 
     // Magical Items can only be generated randomly, using data read from database
     protected MagicalItem() {
-        super(null,0,false,null);
+        super(null,null,0,false,null);
         // fields from MagicalObject: name, price, cursed, quality
         // fields from here: components
         DatabaseConnection databaseConnection = new DatabaseConnection();
@@ -81,6 +81,7 @@ public class MagicalItem extends MagicalObject {
             if (fields.get(i) != null) {
                 List<Object> componentFields = new ArrayList<>(databaseConnection.getMagicalItemComponentsByID(fields.get(i)));
                 // 0 - _id, 1 - name, 2 - material group, 3 - mass, 4 - base price
+                String componentId = (String) componentFields.get(0);
                 String componentName = (String) componentFields.get(1);
                 double componentBasePrice = (double) componentFields.get(4);
                 boolean componentCurseStatus = this.cursed;
@@ -89,8 +90,8 @@ public class MagicalItem extends MagicalObject {
                 List<String> componentPossibleMaterials = new ArrayList<>(databaseConnection.getMaterialsFromGroup((String)componentFields.get(2)));
                 int randomMaterialListIndex = randomIndex(componentPossibleMaterials.size());
                 String componentMaterial = componentPossibleMaterials.get(randomMaterialListIndex);
-                MagicalItemComponent magicalItemComponent = new MagicalItemComponent(componentName, 0, componentCurseStatus, componentQuality, componentBasePrice,componentMass, componentMaterial);
-                // name, price, cursed, quality, basePrice, mass, material id
+                MagicalItemComponent magicalItemComponent = new MagicalItemComponent(componentId, componentName, 0, componentCurseStatus, componentQuality, componentBasePrice,componentMass, componentMaterial);
+                //id, name, price, cursed, quality, basePrice, mass, material id
                 magicalItemComponent.calculatePrice();
                 this.components.add(magicalItemComponent);
             }
@@ -113,6 +114,8 @@ public class MagicalItem extends MagicalObject {
         }
         fullName.append(fields.get(0));
         this.name = fullName.toString();
+
+        this.id = itemID;
 
         // calculate item price
         calculatePrice();
