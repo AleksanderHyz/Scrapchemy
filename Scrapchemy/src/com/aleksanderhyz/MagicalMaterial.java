@@ -115,4 +115,19 @@ public class MagicalMaterial extends MagicalObject {
         this.quality = Quality.getQualityByValue(newQualityValueRounded);
         addMass(addedMaterialMass);
     }
+
+    @Override
+    public String toString() {
+        // fullName creation
+        // [QUALITY] quality [CURSED/null] [material name], [mass]kg
+        StringBuilder fullName = new StringBuilder(this.quality.getVisibleQuality() + " quality ");
+        if (this.cursed) {
+            fullName.append("CURSED ");
+        }
+        fullName.append(this.name);
+        fullName.append(", ");
+        fullName.append(this.mass);
+        fullName.append("kg");
+        return fullName.toString();
+    }
 }

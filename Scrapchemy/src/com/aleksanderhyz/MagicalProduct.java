@@ -105,10 +105,28 @@ public class MagicalProduct extends MagicalObject {
     private class MagicalProductIngredient {
         private String materialID;
         private double mass;
+        private String name;
 
         public MagicalProductIngredient(String materialID, double mass) {
             this.materialID = materialID;
             this.mass = mass;
+            DatabaseConnection databaseConnection = new DatabaseConnection();
+            databaseConnection.open();
+            // get name of the material from database, 1 is the index of name field on the returned list
+            this.name = (String) databaseConnection.getMagicalMaterialByID(materialID).get(1);
+            databaseConnection.close();
+        }
+
+        public String getMaterialID() {
+            return materialID;
+        }
+
+        public double getMass() {
+            return mass;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 
@@ -126,5 +144,12 @@ public class MagicalProduct extends MagicalObject {
 
     public int getCommissionNumber() {
         return commissionNumber;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
+        // name is fullName, created in the constructor in this scheme:
+            // [CURSED/CLEAN/null] [name]
     }
 }

@@ -8,6 +8,7 @@ import com.sun.xml.internal.bind.v2.model.core.ID;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Player {
     private final String name;                                      // name of the Player, used for save file name
@@ -129,6 +130,14 @@ public class Player {
         return magicalMaterials;
     }
 
+    // showing list of items with numbers
+    public void printInventory (List list /* magicalItems, magicalComponents, magicalMaterials or commissionList */) {
+        for (int i = 0; i < list.size(); i++ ) {
+            System.out.println(i+1 + ". " + list.get(i).toString());
+            // .toString is overridden in MagicalObject subclasses to show proper data
+        }
+    }
+
     public boolean dismantleMagicalItem(MagicalItem magicalItem) {
         if (this.magicalItems.contains(magicalItem)) {
             for (MagicalItemComponent component : magicalItem.dismantleMagicalItem()) {
@@ -211,10 +220,18 @@ public class Player {
     public enum CommissionStatus {
         COMPLETING_POSSIBLE,
         LACK_OF_MATERIALS,
-        LACK_OF_NO_CURSED_MATERIALS,
+        LACK_OF_NON_CURSED_MATERIALS,
         COMPLETED_SUCCESSFULLY,
         PRODUCT_NOT_ON_COMMISSION_LIST,
         ALL_MATERIALS_CURSED
+    }
+
+    public enum MaterialCheck {
+        MATERIAL_NOT_FOUND,
+        NOT_ENOUGH_MATERIAL,
+        MATERIAL_CURSED,
+        LACK_OF_CURSED_MATERIAL,
+        NOT_ENOUGH_FUEL_LEFT
     }
 
     // method to check if Player has enough materials in their inventory needed to fulfill a certain commission
@@ -239,6 +256,19 @@ public class Player {
         // change of plans, materials will be checked only after Player chooses them
         // so determining whether their supplies are enough is on their side, being part of the challenge
 
+    public CommissionStatus fulfillCommission (MagicalProduct commission) {
+        if (this.commissionList.contains(commission)) {
 
+
+
+
+        } else {
+            return CommissionStatus.PRODUCT_NOT_ON_COMMISSION_LIST;
+        }
+    }
+
+    private MaterialCheck materialCheck (MagicalProduct magicalProduct, int ingredientIndex /* 0-2, with 3 ingredients being maximum */, MagicalMaterial magicalMaterial) {
+        
+    }
 
 }

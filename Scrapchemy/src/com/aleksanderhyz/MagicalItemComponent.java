@@ -64,7 +64,7 @@ public class MagicalItemComponent extends MagicalObject {
         DatabaseConnection databaseConnection = new DatabaseConnection();
         databaseConnection.open();
         // build name:
-         // [QUALITY] quality [CURSED/null] [material] [item name]
+         // [QUALITY] quality [CURSED/null] [material] [component name]
         StringBuilder fullName = new StringBuilder(this.quality.getVisibleQuality() + " quality ");
         if (this.cursed) {
             fullName.append("CURSED ");
@@ -114,5 +114,13 @@ public class MagicalItemComponent extends MagicalObject {
         databaseConnection.close();
 
         return magicalMaterial;
+    }
+
+    @Override
+    public String toString() {
+        return this.name + ", " + this.mass + "kg";
+        // name is fullName, created in the constructor in this scheme:
+            // [QUALITY] quality [CURSED/null] [material] [component name]
+        // with mass added at the end
     }
 }

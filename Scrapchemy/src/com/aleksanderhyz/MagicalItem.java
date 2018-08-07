@@ -146,4 +146,10 @@ public class MagicalItem extends MagicalObject {
         return salvagedComponents;
     }
 
+    @Override
+    public String toString() {
+        return this.name;
+        // name is fullName, created in the constructor in this scheme:
+            // [QUALITY] quality [CURSED/null] [item name]
+    }
 }
