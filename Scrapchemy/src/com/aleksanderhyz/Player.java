@@ -233,7 +233,8 @@ public class Player {
         NOT_ENOUGH_MATERIAL,
         MATERIAL_CURSED,
         LACK_OF_CURSED_MATERIAL,
-        NOT_ENOUGH_FUEL_LEFT
+        NOT_FUEL,
+        RIGHT_FUEL
     }
 
     // method to check if Player has enough materials in their inventory needed to fulfill a certain commission
@@ -258,12 +259,13 @@ public class Player {
         // change of plans, materials will be checked only after Player chooses them
         // so determining whether their supplies are enough is on their side, being part of the challenge
 
-    public CommissionStatus fulfillCommission (MagicalProduct commission) {
+    public CommissionStatus fulfillCommission (MagicalProduct commission, List<MagicalMaterial> chosenIngedients, MagicalMaterial chosenFuel) {
         if (this.commissionList.contains(commission)) {
-            // move all materials from the inventory to a temporary list
-            // in order to delete all chosen materials from it during the process of choosing ingredients
-            // but without deleting them from inventory in case product in the end is not created
-            List<MagicalMaterial> temporaryMaterialList = this.magicalMaterials;
+            if (commission.getRequiredCursedStatus().equals(MagicalProduct.RequiredCursedStatus.CURSED)) {
+                // checking if any of the used ingredients or fuel is cursed
+                // at least one has to be in order to make the whole product cursed
+
+            }
 
 
 
@@ -272,7 +274,7 @@ public class Player {
         }
     }
 
-    private MaterialCheck materialCheck (MagicalProduct.MagicalProductIngredient magicalProductIngredient, MagicalMaterial chosenMagicalMaterial, MagicalProduct.RequiredCursedStatus requiredCursedStatus) {
+    public MaterialCheck materialCheck (MagicalProduct.MagicalProductIngredient magicalProductIngredient, MagicalMaterial chosenMagicalMaterial, MagicalProduct.RequiredCursedStatus requiredCursedStatus) {
 
         // first check id
         if (chosenMagicalMaterial.getId().equals(magicalProductIngredient.getMaterialID())) {
@@ -294,6 +296,36 @@ public class Player {
 
         } else {
             return MaterialCheck.WRONG_MATERIAL;
+        }
+    }
+
+    public MaterialCheck fuelCheck (MagicalProduct magicalProduct, MagicalMaterial chosenFuel) {
+
+        // only one object is given as fuel, but there is an option to combine various materials
+        // as fuel for one product, then they're combined into one material, with mass of all of them
+        // and cursed if any of the used fuel ingredients was cursed
+        // all that is covered in different method [METHOD TO BE WRITTEN]
+
+        // check if given material is suitable for fuel (is in wood group)
+        if (chosenFuel.getMaterialGroup().equals(MagicalMaterial.WOOD_GROUP_ID)) {
+
+            // if the product's required status is CLEAN then fuel can't be cursed
+            if (magicalProduct.getRequiredCursedStatus().equals(MagicalProduct.RequiredCursedStatus.CLEAN)) {
+                if (chosenFuel.isCursed()) {
+                    return MaterialCheck.MATERIAL_CURSED;
+                }
+            }
+
+            // checking mass
+            if (chosenFuel.getMass() < magicalProduct.getFuelMass()) {
+                return MaterialCheck.NOT_ENOUGH_MATERIAL;
+            }
+
+            // all requirements met
+            return MaterialCheck.RIGHT_FUEL;
+
+        } else {
+            return MaterialCheck.NOT_FUEL;
         }
     }
 
