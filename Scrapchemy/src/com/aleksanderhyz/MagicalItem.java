@@ -1,13 +1,13 @@
 package com.aleksanderhyz;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 /**
  * Items that Player can buy in the Market or resell them
  * They're built from Magical Item Components, defined by type of Magical Item
  */
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class MagicalItem extends MagicalObject {
 

@@ -1,12 +1,12 @@
 package com.aleksanderhyz;
 
-/**
- *  This class provides methods for connecting to the Scrapchemy_database.db to get data and operate on it in the other classes and to save data to save file database
- */
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ *  This class provides methods for connecting to the Scrapchemy_database.db to get data and operate on it in the other classes and to save data to save file database
+ */
 
 public class DatabaseConnection {
 

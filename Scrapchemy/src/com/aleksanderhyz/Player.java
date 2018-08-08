@@ -1,14 +1,14 @@
 package com.aleksanderhyz;
 
-/**
- *  Class that defines the game progress
- */
-
 import com.sun.xml.internal.bind.v2.model.core.ID;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+/**
+ *  Class that defines the game progress
+ */
 
 public class Player {
     private final String name;                                      // name of the Player, used for save file name
@@ -220,6 +220,7 @@ public class Player {
     public enum CommissionStatus {
         COMPLETING_POSSIBLE,
         LACK_OF_MATERIALS,
+        LACK_OF_CURSED_MATERIALS,
         LACK_OF_NON_CURSED_MATERIALS,
         COMPLETED_SUCCESSFULLY,
         PRODUCT_NOT_ON_COMMISSION_LIST,
@@ -259,20 +260,38 @@ public class Player {
         // change of plans, materials will be checked only after Player chooses them
         // so determining whether their supplies are enough is on their side, being part of the challenge
 
-    public CommissionStatus fulfillCommission (MagicalProduct commission, List<MagicalMaterial> chosenIngedients, MagicalMaterial chosenFuel) {
-        if (this.commissionList.contains(commission)) {
-            if (commission.getRequiredCursedStatus().equals(MagicalProduct.RequiredCursedStatus.CURSED)) {
-                // checking if any of the used ingredients or fuel is cursed
-                // at least one has to be in order to make the whole product cursed
-
-            }
-
-
-
-        } else {
-            return CommissionStatus.PRODUCT_NOT_ON_COMMISSION_LIST;
-        }
-    }
+//    public CommissionStatus fulfillCommission (MagicalProduct commission, List<MagicalMaterial> chosenIngredients, MagicalMaterial chosenFuel) {
+//        if (this.commissionList.contains(commission)) {
+//            if (commission.getRequiredCursedStatus().equals(MagicalProduct.RequiredCursedStatus.CURSED)) {
+//                // checking if any of the used ingredients or fuel is cursed
+//                // at least one has to be in order to make the whole product cursed
+//
+//                boolean productCursed = false;
+//
+//                // check all ingredients
+//                for (MagicalMaterial ingredient : chosenIngredients) {
+//                    if (ingredient.isCursed()) {
+//                        productCursed = true;
+//                    }
+//                }
+//                // check fuel
+//                if (chosenFuel.isCursed()) {
+//                    productCursed = true;
+//                }
+//
+//                if (!productCursed) {
+//                    return CommissionStatus.LACK_OF_CURSED_MATERIALS;
+//                } // if else just go further
+//
+//            }
+//
+//        } else {
+//            return CommissionStatus.PRODUCT_NOT_ON_COMMISSION_LIST;
+//        }
+//    }
+    // change of plans, there will be a method in main that calls for each ingredient and requires the player to choose material(s) matching ingredient currently asked for
+    // in that way there won't be a problem with different order of ingredients required and given ones
+    // also it will be easier to use materials from different stocks (of different quality and curse status) as one ingredient
 
     public MaterialCheck materialCheck (MagicalProduct.MagicalProductIngredient magicalProductIngredient, MagicalMaterial chosenMagicalMaterial, MagicalProduct.RequiredCursedStatus requiredCursedStatus) {
 
