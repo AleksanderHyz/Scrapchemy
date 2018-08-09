@@ -5,9 +5,17 @@ import java.util.Scanner;
 /**
  *  Class for defining methods for commands sent by Player from keyboard
  *
- *  command tree:
- *  MainGameChoice
- *      GO_TO_MARKET
+ *  command trees:
+ *
+ *  StarGameChoice:
+ *      START_NEW_GAME
+ *          [choose name for new Player and start the game]
+ *      LOAD_GAME
+ *          [chose .db save file to load]
+ *      QUIT
+ *
+ *  MainGameChoice:
+ *      GO_TO_MARKET -> MarketChoice
  *          BUY
  *              [choose item to buy]
  *              RETURN
@@ -46,7 +54,7 @@ import java.util.Scanner;
 
 public class KeyboardInput {
 
-    private Scanner scanner = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in);
 
     // operations after game start
     public enum StartGameChoice {
@@ -74,7 +82,7 @@ public class KeyboardInput {
             return WRONG_COMMAND;
         }
     }
-    public StartGameChoice startGameChoice () {
+    public static StartGameChoice startGameChoice () {
         String command = scanner.nextLine().toUpperCase();
         return StartGameChoice.getChoiceByCommand(command);
 
@@ -107,9 +115,41 @@ public class KeyboardInput {
             return WRONG_COMMAND;
         }
     }
-    public MainGameChoice mainGameChoice () {
+    public static MainGameChoice mainGameChoice () {
         String command = scanner.nextLine().toUpperCase();
         return MainGameChoice.getChoiceByCommand(command);
+
+    }
+
+    // market operations
+    public enum MarketChoice {
+        BUY("BUY"),
+        SELL("SELL"),
+        RETURN("RETURN"),
+        WRONG_COMMAND(null);
+
+        private String command;
+
+        public String getCommand() {
+            return command;
+        }
+
+        MarketChoice(String command) {
+            this.command = command;
+        }
+
+        public static MarketChoice getChoiceByCommand (String command) {
+            for (MarketChoice marketChoice : values()) {
+                if (command.equals(marketChoice.getCommand())) {
+                    return marketChoice;
+                }
+            }
+            return WRONG_COMMAND;
+        }
+    }
+    public static MarketChoice marketChoice() {
+        String command = scanner.nextLine().toUpperCase();
+        return MarketChoice.getChoiceByCommand(command);
 
     }
 

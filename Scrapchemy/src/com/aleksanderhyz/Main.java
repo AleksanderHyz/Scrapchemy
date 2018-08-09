@@ -1,15 +1,16 @@
 package com.aleksanderhyz;
 
-import java.util.Scanner;
-
 public class Main {
 
+    private static boolean quitGame = false;
 
     public static void main(String[] args) {
 
+        // start game
+        gameStart();
 
         // main loop of running the game
-        while (true) {
+        while (!quitGame) {
 
         }
 
@@ -27,8 +28,20 @@ public class Main {
 
 // game start
     private static void gameStart () {
-        switch (choice) {
-
+        KeyboardInput.StartGameChoice command = KeyboardInput.startGameChoice();
+        switch (command) {
+            case START_NEW_GAME:
+                // start new game, create new player
+                StartGame();
+                break;
+            case LOAD_GAME:
+                // load previously saved game from a save .db file
+                LoadGame();
+                break;
+            case QUIT:
+                // quitGame game, end the program
+                quitGame = true;
+                break;
         }
     }
 
