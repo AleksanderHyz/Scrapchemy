@@ -6,25 +6,37 @@ public class Main {
 
     public static void main(String[] args) {
 
-        while (!quitGame) {
-            // start game
-            System.out.println("Welcome to Scrapchemy.\n" +
-                    "Type in your command:\n" +
-                    "Start new game: " + KeyboardInput.GameChoice.START_NEW_GAME.getCommand() + "\n" +
-                    "Load saved game: " + KeyboardInput.GameChoice.LOAD_GAME.getCommand() + "\n" +
-                    "Quit game: " + KeyboardInput.GameChoice.QUIT.getCommand());
+        // start game
+        System.out.println("Welcome to Scrapchemy.\n" +
+                "Type in your command:\n" +
+                "Start new game: " + KeyboardInput.GameChoice.START_NEW_GAME.getCommand() + "\n" +
+                "Load saved game: " + KeyboardInput.GameChoice.LOAD_GAME.getCommand() + "\n" +
+                "Quit game: " + KeyboardInput.GameChoice.QUIT.getCommand());
+        while (true) {
             KeyboardInput.GameChoice command = KeyboardInput.gameChoice();
             if (command.equals(KeyboardInput.GameChoice.QUIT)) {
                 quitGame = true;
-                return;
+                break;
+                // game quit, this loop ends, the next one does not start because quitGame is true, program ends
             } else if (command.equals(KeyboardInput.GameChoice.START_NEW_GAME)) {
-
+                System.out.print("Starting new game.\n" +
+                        "Enter new player's name: ");
+                String newName = KeyboardInput.enterPlayerName();
+                Player player = new Player(newName);
+                break;
+                // new game starts
+            } else if (command.equals(KeyboardInput.GameChoice.LOAD_GAME)) {
+                // loading saved game from .db file
+                /*TO BE MADE*/
+            } else {
+                System.out.println("Wrong command.");
             }
-
         }
 
         // main game
-        while ()
+        while (!quitGame) {
+
+        }
     }
 
 

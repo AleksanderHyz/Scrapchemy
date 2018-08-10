@@ -113,4 +113,14 @@ public class KeyboardInput {
         String command = scanner.nextLine().toUpperCase();
         return GameChoice.getChoiceByCommand(command);
     }
+
+
+    // methods used for creating new Player
+    public static String enterPlayerName () {
+        String playerName;
+
+        playerName = scanner.nextLine();
+
+        return playerName;
+    }
 }
