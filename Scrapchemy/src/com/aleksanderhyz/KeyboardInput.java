@@ -1,5 +1,7 @@
 package com.aleksanderhyz;
 
+import com.sun.org.apache.bcel.internal.generic.RETURN;
+
 import java.util.Scanner;
 
 /**
@@ -85,7 +87,6 @@ public class KeyboardInput {
     public static StartGameChoice startGameChoice () {
         String command = scanner.nextLine().toUpperCase();
         return StartGameChoice.getChoiceByCommand(command);
-
     }
 
     // operations during the game
@@ -118,7 +119,6 @@ public class KeyboardInput {
     public static MainGameChoice mainGameChoice () {
         String command = scanner.nextLine().toUpperCase();
         return MainGameChoice.getChoiceByCommand(command);
-
     }
 
     // market operations
@@ -150,7 +150,67 @@ public class KeyboardInput {
     public static MarketChoice marketChoice() {
         String command = scanner.nextLine().toUpperCase();
         return MarketChoice.getChoiceByCommand(command);
+    }
 
+    // inventory operations
+    public enum InventoryChoice {
+        DISMANTLE_ITEM("DISMANTLE"),
+        PROCESS_COMPONENT("PROCESS"),
+        RETURN("RETURN"),
+        WRONG_COMMAND(null);
+
+        private String command;
+
+        public String getCommand() {
+            return command;
+        }
+
+        InventoryChoice(String command) {
+            this.command = command;
+        }
+
+        public static InventoryChoice getChoiceByCommand (String command) {
+            for (InventoryChoice inventoryChoice : values()) {
+                if (command.equals(inventoryChoice.getCommand())) {
+                    return inventoryChoice;
+                }
+            }
+            return WRONG_COMMAND;
+        }
+    }
+    public static InventoryChoice inventoryChoice() {
+        String command = scanner.nextLine().toUpperCase();
+        return InventoryChoice.getChoiceByCommand(command);
+    }
+
+    // commissions operations
+    public enum CommissionChoice {
+        CHOOSE_COMMISSION("CHOOSE"),
+        RETURN("RETURN"),
+        WRONG_COMMAND(null);
+
+        private String command;
+
+        public String getCommand() {
+            return command;
+        }
+
+        CommissionChoice(String command) {
+            this.command = command;
+        }
+
+        public static CommissionChoice getChoiceByCommand (String command) {
+            for (CommissionChoice commissionChoice : values()) {
+                if (command.equals(commissionChoice.getCommand())) {
+                    return commissionChoice;
+                }
+            }
+            return WRONG_COMMAND;
+        }
+    }
+    public static CommissionChoice commissionChoice() {
+        String command = scanner.nextLine().toUpperCase();
+        return CommissionChoice.getChoiceByCommand(command);
     }
 
 }
