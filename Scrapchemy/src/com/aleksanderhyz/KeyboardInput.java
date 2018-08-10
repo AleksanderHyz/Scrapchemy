@@ -1,7 +1,5 @@
 package com.aleksanderhyz;
 
-import com.sun.org.apache.bcel.internal.generic.RETURN;
-
 import java.util.Scanner;
 
 /**
@@ -58,44 +56,39 @@ public class KeyboardInput {
 
     private static Scanner scanner = new Scanner(System.in);
 
-    // operations after game start
-    public enum StartGameChoice {
+    // commands for the whole game
+        // all commands were moved to one enum (previously there were separate enums for each group)
+        // to avoid code repetition (the enum methods)
+        // and because the way to recognize commands from different groups as unknown ones was not needed
+        // since each command has to recognized separately in Main methods anyway
+    public enum GameChoice {
+        // start game commands
         START_NEW_GAME("START"),
         LOAD_GAME("LOAD"),
         QUIT("QUIT"),
-        WRONG_COMMAND(null);
 
-        private String command;
+        // general return command
+        RETURN("RETURN"),
 
-        public String getCommand() {
-            return command;
-        }
+        // when unspecified command is given
+        UNKNOWN_COMMAND(null),
 
-        StartGameChoice (String command) {
-            this.command = command;
-        }
-
-        public static StartGameChoice getChoiceByCommand (String command) {
-            for (StartGameChoice startGameChoice : values()) {
-                if (command.equals(startGameChoice.getCommand())) {
-                    return startGameChoice;
-                }
-            }
-            return WRONG_COMMAND;
-        }
-    }
-    public static StartGameChoice startGameChoice () {
-        String command = scanner.nextLine().toUpperCase();
-        return StartGameChoice.getChoiceByCommand(command);
-    }
-
-    // operations during the game
-    public enum MainGameChoice {
+        // main game commands
         GO_TO_MARKET("MARKET"),
+            // market commands
+            BUY("BUY"),
+            SELL("SELL"),
         GO_TO_INVENTORY("INVENTORY"),
+            // inventory commands
+            DISMANTLE_ITEM("DISMANTLE"),
+            PROCESS_COMPONENT("PROCESS"),
         GO_TO_COMMISSIONS("COMMISSIONS"),
+            // commission commands
+            CHOOSE_COMMISSION("CHOOSE"),
         PAUSE_GAME("PAUSE"),
-        WRONG_COMMAND(null);
+            // pause commands
+            SAVE_GAME("SAVE"),
+            RESUME_GAME("RESUME");
 
         private String command;
 
@@ -103,114 +96,21 @@ public class KeyboardInput {
             return command;
         }
 
-        MainGameChoice(String command) {
+        GameChoice(String command) {
             this.command = command;
         }
 
-        public static MainGameChoice getChoiceByCommand (String command) {
-            for (MainGameChoice mainGameChoice : values()) {
-                if (command.equals(mainGameChoice.getCommand())) {
-                    return mainGameChoice;
+        public static GameChoice getChoiceByCommand (String command) {
+            for (GameChoice gameChoice : values()) {
+                if (command.equals(gameChoice.getCommand())) {
+                    return gameChoice;
                 }
             }
-            return WRONG_COMMAND;
+            return UNKNOWN_COMMAND;
         }
     }
-    public static MainGameChoice mainGameChoice () {
+    public static GameChoice gameChoice () {
         String command = scanner.nextLine().toUpperCase();
-        return MainGameChoice.getChoiceByCommand(command);
+        return GameChoice.getChoiceByCommand(command);
     }
-
-    // market operations
-    public enum MarketChoice {
-        BUY("BUY"),
-        SELL("SELL"),
-        RETURN("RETURN"),
-        WRONG_COMMAND(null);
-
-        private String command;
-
-        public String getCommand() {
-            return command;
-        }
-
-        MarketChoice(String command) {
-            this.command = command;
-        }
-
-        public static MarketChoice getChoiceByCommand (String command) {
-            for (MarketChoice marketChoice : values()) {
-                if (command.equals(marketChoice.getCommand())) {
-                    return marketChoice;
-                }
-            }
-            return WRONG_COMMAND;
-        }
-    }
-    public static MarketChoice marketChoice() {
-        String command = scanner.nextLine().toUpperCase();
-        return MarketChoice.getChoiceByCommand(command);
-    }
-
-    // inventory operations
-    public enum InventoryChoice {
-        DISMANTLE_ITEM("DISMANTLE"),
-        PROCESS_COMPONENT("PROCESS"),
-        RETURN("RETURN"),
-        WRONG_COMMAND(null);
-
-        private String command;
-
-        public String getCommand() {
-            return command;
-        }
-
-        InventoryChoice(String command) {
-            this.command = command;
-        }
-
-        public static InventoryChoice getChoiceByCommand (String command) {
-            for (InventoryChoice inventoryChoice : values()) {
-                if (command.equals(inventoryChoice.getCommand())) {
-                    return inventoryChoice;
-                }
-            }
-            return WRONG_COMMAND;
-        }
-    }
-    public static InventoryChoice inventoryChoice() {
-        String command = scanner.nextLine().toUpperCase();
-        return InventoryChoice.getChoiceByCommand(command);
-    }
-
-    // commissions operations
-    public enum CommissionChoice {
-        CHOOSE_COMMISSION("CHOOSE"),
-        RETURN("RETURN"),
-        WRONG_COMMAND(null);
-
-        private String command;
-
-        public String getCommand() {
-            return command;
-        }
-
-        CommissionChoice(String command) {
-            this.command = command;
-        }
-
-        public static CommissionChoice getChoiceByCommand (String command) {
-            for (CommissionChoice commissionChoice : values()) {
-                if (command.equals(commissionChoice.getCommand())) {
-                    return commissionChoice;
-                }
-            }
-            return WRONG_COMMAND;
-        }
-    }
-    public static CommissionChoice commissionChoice() {
-        String command = scanner.nextLine().toUpperCase();
-        return CommissionChoice.getChoiceByCommand(command);
-    }
-
 }

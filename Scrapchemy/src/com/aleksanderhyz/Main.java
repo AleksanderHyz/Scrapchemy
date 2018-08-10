@@ -6,14 +6,25 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // start game
-        gameStart();
-
-        // main loop of running the game
         while (!quitGame) {
+            // start game
+            System.out.println("Welcome to Scrapchemy.\n" +
+                    "Type in your command:\n" +
+                    "Start new game: " + KeyboardInput.GameChoice.START_NEW_GAME.getCommand() + "\n" +
+                    "Load saved game: " + KeyboardInput.GameChoice.LOAD_GAME.getCommand() + "\n" +
+                    "Quit game: " + KeyboardInput.GameChoice.QUIT.getCommand());
+            KeyboardInput.GameChoice command = KeyboardInput.gameChoice();
+            if (command.equals(KeyboardInput.GameChoice.QUIT)) {
+                quitGame = true;
+                return;
+            } else if (command.equals(KeyboardInput.GameChoice.START_NEW_GAME)) {
+
+            }
 
         }
 
+        // main game
+        while ()
     }
 
 
@@ -28,7 +39,7 @@ public class Main {
 
 // game start
     private static void gameStart () {
-        KeyboardInput.StartGameChoice command = KeyboardInput.startGameChoice();
+        KeyboardInput.GameChoice command = KeyboardInput.gameChoice();
         switch (command) {
             case START_NEW_GAME:
                 // start new game, create new player
@@ -41,6 +52,9 @@ public class Main {
             case QUIT:
                 // quitGame game, end the program
                 quitGame = true;
+                break;
+            default:
+                gameStart();
                 break;
         }
     }
