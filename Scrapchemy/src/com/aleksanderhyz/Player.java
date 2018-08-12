@@ -1,7 +1,5 @@
 package com.aleksanderhyz;
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -236,6 +234,13 @@ public class Player {
         LACK_OF_CURSED_MATERIAL,
         NOT_FUEL,
         RIGHT_FUEL
+    }
+
+    public List<MagicalProduct> getCommissionList() {
+        return commissionList;
+    }
+    public int getCommissionsCompleted() {
+        return commissionsCompleted;
     }
 
     // method to check if Player has enough materials in their inventory needed to fulfill a certain commission

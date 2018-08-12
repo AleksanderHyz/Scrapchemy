@@ -94,7 +94,10 @@ public class MagicalProduct extends MagicalObject {
 
         //generate full name:
             // [CURSED/CLEAN/null] [name]
-        StringBuilder commissionFullName = new StringBuilder(this.requiredCursedStatus.toString());
+        StringBuilder commissionFullName = new StringBuilder();
+        if (!this.requiredCursedStatus.equals(RequiredCursedStatus.NO_MATTER)) {
+            commissionFullName.append(this.requiredCursedStatus.toString());
+        }
         commissionFullName.append(productName);
         this.name = commissionFullName.toString();
 

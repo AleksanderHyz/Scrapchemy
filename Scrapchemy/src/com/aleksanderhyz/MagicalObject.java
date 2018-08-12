@@ -84,7 +84,7 @@ public abstract class MagicalObject {
             } else if (this.value == 10) {
                 return EXCELLENT_QUALITY;
             }
-            return null;
+            return UNACCEPTABLE_QUALITY; // in case of error
         }
 
         public String getVisibleQuality() {
