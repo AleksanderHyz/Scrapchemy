@@ -1,5 +1,9 @@
 package com.aleksanderhyz;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -55,6 +59,7 @@ import java.util.Scanner;
 public class KeyboardInput {
 
     private static Scanner scanner = new Scanner(System.in);
+    private static BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
     // commands for the whole game
         // all commands were moved to one enum (previously there were separate enums for each group)
@@ -122,5 +127,27 @@ public class KeyboardInput {
         playerName = scanner.nextLine();
 
         return playerName;
+    }
+
+    // choosing item from list by index number given from keyboard input
+    public static int getIndexNumber () {
+
+        int index = -1;
+        boolean rightIndex = false;
+
+        while (!rightIndex) {
+            // trying to read the index number
+            try {
+                index = Integer.parseInt(bufferedReader.readLine());
+            } catch (IOException e) {
+                System.out.println("Reading input failed: " + e.getMessage());
+            } catch (NumberFormatException e) {
+                System.out.println("This is not a number: " + e.getMessage() +
+                "\nTry again:");
+            }
+            rightIndex = (index != -1) ? true : false;
+        }
+
+        return index - 1;
     }
 }

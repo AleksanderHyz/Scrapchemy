@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- *  Class that defines the game progress
+ *  Singleton class that defines the game progress
  */
 
 public class Player {
@@ -111,6 +111,14 @@ public class Player {
     public void addNewCommission () {
         MagicalProduct newCommission = new MagicalProduct();
         this.commissionList.add(newCommission);
+    }
+
+    // showing list of items for sale, with numbers and prices
+    public void printMarket () {
+        for (int i = 0; i < market.size(); i++ ) {
+            System.out.println(i+1 + ". " + market.get(i).toString() + ", " + market.get(i).getPrice() + " \u20AC" /*Euro currency symbol*/);
+            // .toString is overridden in MagicalObject subclasses to show proper data
+        }
     }
 
 

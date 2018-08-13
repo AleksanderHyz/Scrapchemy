@@ -3,7 +3,7 @@ package com.aleksanderhyz;
 import java.util.Random;
 
 /**
- *  Abstract class to define fields and methods for all kinds of magical objects the player can buy, obtain or sell.
+ *  Abstract class serving as factory method for all kinds of magical objects the player can buy, obtain or sell.
  *  Classes extending this one:
  *  MagicalItem
  *  MagicalItemComponent

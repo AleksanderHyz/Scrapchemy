@@ -1,8 +1,11 @@
 package com.aleksanderhyz;
 
+import java.util.List;
+
 public class Main {
 
-    // instance of Player
+    // instance of Player, this object is a singleton
+    // fields are defined when user chooses to start new game or load a saved file
     private static Player player;
 
     // variable which decides when to quit game
@@ -39,7 +42,7 @@ public class Main {
                     player.addNewCommission();
                 }
                 printSeparator();
-                playerStatusDisplay(player);
+                playerStatusDisplay();
                 break;
                 // new game starts
             } else if (command.equals(KeyboardInput.GameChoice.LOAD_GAME)) {
@@ -62,8 +65,17 @@ public class Main {
             printSeparator();
             if (command.equals(KeyboardInput.GameChoice.GO_TO_MARKET)) {
                 // going to Market to buy Magical Items or sell Magical Objects
-                System.out.println("Currently at the market:\n");
-                player.printInventory(player.getMarket());
+                System.out.println("Currently available at the market:");
+                player.printMarket();
+                System.out.println("\n Choose your action: " + KeyboardInput.GameChoice.BUY.getCommand() + ", " + KeyboardInput.GameChoice.SELL.getCommand() + "\n");
+                command = KeyboardInput.gameChoice();
+                if (command.equals(KeyboardInput.GameChoice.BUY)) {
+                    // buying new item
+                    buyItemFromMarket();
+                } else if (command.equals(KeyboardInput.GameChoice.SELL)) {
+                    // selling an object from inventory
+                }
+
             } else if (command.equals(KeyboardInput.GameChoice.GO_TO_INVENTORY)) {
                 // going to inventory to see what's there and process Magical Objects into different ones
             } else if (command.equals(KeyboardInput.GameChoice.GO_TO_COMMISSIONS)) {
@@ -86,12 +98,16 @@ public class Main {
 //    //List<MagicalMaterial> temporaryMaterialList = this.magicalMaterials;
 //
 
+    // print separator:
+    private static void printSeparator () {
+        System.out.println("==========================================================================");
+    }
 
     // Unicode for used symbols:
         // \u20AC - Euro currency symbol
 
     // standard Player status display
-    private static void playerStatusDisplay (Player player) {
+    private static void playerStatusDisplay () {
         System.out.println(player.getName() + "'s current status:\n" +
                 "Money: " + player.getWallet() + " \u20AC\n" +
                 "Commissions completed: " + player.getCommissionsCompleted() + "\n\n" +
@@ -103,9 +119,28 @@ public class Main {
 
     }
 
-    // print separator:
-    private static void printSeparator () {
-        System.out.println("==========================================================================");
+    // buying Magical Item from the market
+    private static void buyItemFromMarket () {
+        System.out.print("Choose item from the market (type in the number): ");
+        MagicalItem chosenItem = (MagicalItem) getObjectByIndex(player.getMarket());
+
     }
 
+
+    // choosing item from list by index number given from keyboard input
+    private static Object getObjectByIndex (List list) {
+        Object object = null;
+        boolean indexInRange = false;
+        while (!indexInRange) {
+            int index = KeyboardInput.getIndexNumber();
+            try {
+                object = list.get(index);
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("Number out of range: " + e.getMessage() +
+                "\nTry again: ");
+            }
+            indexInRange = (object != null) ? true : false;
+        }
+        return object;
+    }
 }
