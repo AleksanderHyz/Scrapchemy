@@ -32,7 +32,6 @@ import java.util.Scanner;
  *                  RETURN
  *              SELL_MATERIAL
  *                  [choose material to sell]
- *                      [choose amount if it to sell]
  *                      RETURN
  *                  RETURN
  *              RETURN
@@ -73,7 +72,11 @@ public class KeyboardInput {
         QUIT("QUIT"),
 
         // general return command
-        RETURN("RETURN"),
+        RETURN("R"),
+
+        // general "yes/no" commands
+        YES("Y"),
+        NO("N"),
 
         // when unspecified command is given
         UNKNOWN_COMMAND(null),
@@ -83,6 +86,10 @@ public class KeyboardInput {
             // market commands
             BUY("BUY"),
             SELL("SELL"),
+                // sell object commands
+                SELL_ITEM("ITEM"),
+                SELL_COMPONENT("COMPONENT"),
+                SELL_MATERIAL("MATERIAL"),
         GO_TO_INVENTORY("INVENTORY"),
             // inventory commands
             DISMANTLE_ITEM("DISMANTLE"),
@@ -90,7 +97,7 @@ public class KeyboardInput {
         GO_TO_COMMISSIONS("COMMISSIONS"),
             // commission commands
             CHOOSE_COMMISSION("CHOOSE"),
-        PAUSE_GAME("PAUSE"),
+        PAUSE_GAME("P"),
             // pause commands
             SAVE_GAME("SAVE"),
             RESUME_GAME("RESUME");

@@ -38,7 +38,7 @@ public class Main {
                 // bringing items to buy at the Market
                 player.refreshMarket();
                 // adding commissions
-                for (int i = 1; i <= 5; i++){
+                for (int i = 1; i <= 5; i++) {
                     player.addNewCommission();
                 }
                 printSeparator();
@@ -65,23 +65,16 @@ public class Main {
             printSeparator();
             if (command.equals(KeyboardInput.GameChoice.GO_TO_MARKET)) {
                 // going to Market to buy Magical Items or sell Magical Objects
-                System.out.println("Currently available at the market:");
-                player.printMarket();
-                System.out.println("\n Choose your action: " + KeyboardInput.GameChoice.BUY.getCommand() + ", " + KeyboardInput.GameChoice.SELL.getCommand() + "\n");
-                command = KeyboardInput.gameChoice();
-                if (command.equals(KeyboardInput.GameChoice.BUY)) {
-                    // buying new item
-                    buyItemFromMarket();
-                } else if (command.equals(KeyboardInput.GameChoice.SELL)) {
-                    // selling an object from inventory
-                }
-
+                goToMarket();
             } else if (command.equals(KeyboardInput.GameChoice.GO_TO_INVENTORY)) {
                 // going to inventory to see what's there and process Magical Objects into different ones
+                goToInventory();
             } else if (command.equals(KeyboardInput.GameChoice.GO_TO_COMMISSIONS)) {
                 // looking at commissions to check needed ingredients and fulfill them
+
             } else if (command.equals(KeyboardInput.GameChoice.PAUSE_GAME)) {
                 // pausing the game to save or quit
+                pauseMenu();
             } else {
                 System.out.println("Wrong command.");
             }
@@ -99,15 +92,15 @@ public class Main {
 //
 
     // print separator:
-    private static void printSeparator () {
+    private static void printSeparator() {
         System.out.println("==========================================================================");
     }
 
     // Unicode for used symbols:
-        // \u20AC - Euro currency symbol
+    // \u20AC - Euro currency symbol
 
     // standard Player status display
-    private static void playerStatusDisplay () {
+    private static void playerStatusDisplay() {
         System.out.println(player.getName() + "'s current status:\n" +
                 "Money: " + player.getWallet() + " \u20AC\n" +
                 "Commissions completed: " + player.getCommissionsCompleted() + "\n\n" +
@@ -119,16 +112,8 @@ public class Main {
 
     }
 
-    // buying Magical Item from the market
-    private static void buyItemFromMarket () {
-        System.out.print("Choose item from the market (type in the number): ");
-        MagicalItem chosenItem = (MagicalItem) getObjectByIndex(player.getMarket());
-
-    }
-
-
     // choosing item from list by index number given from keyboard input
-    private static Object getObjectByIndex (List list) {
+    private static Object getObjectByIndex(List list) {
         Object object = null;
         boolean indexInRange = false;
         while (!indexInRange) {
@@ -137,10 +122,118 @@ public class Main {
                 object = list.get(index);
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("Number out of range: " + e.getMessage() +
-                "\nTry again: ");
+                        "\nTry again: ");
             }
             indexInRange = (object != null) ? true : false;
         }
         return object;
     }
+
+
+    // market methods
+
+    // general market method
+    private static void goToMarket () {
+        boolean stayAtMarket = true;
+
+        System.out.println("Currently available at the market:");
+        player.printMarket();
+
+        while (stayAtMarket) {
+            System.out.println("\n Choose your action: " +
+                    KeyboardInput.GameChoice.BUY.getCommand() + ", " +
+                    KeyboardInput.GameChoice.SELL.getCommand() + ", " +
+                    KeyboardInput.GameChoice.RETURN.getCommand() + "\n");
+            command = KeyboardInput.gameChoice();
+
+            if (command.equals(KeyboardInput.GameChoice.BUY)) {
+                // buying new item
+                Player.TransactionStatus transactionStatus = buyItemFromMarket();
+                // buying more items
+                while (!player.getMarket().isEmpty()) {
+                    System.out.println("Do you wish to buy another item?\n(" +
+                            KeyboardInput.GameChoice.YES.getCommand() + " or " +
+                            KeyboardInput.GameChoice.NO.getCommand() + "): ");
+                    command = KeyboardInput.gameChoice();
+                    if (command.equals(KeyboardInput.GameChoice.YES)) {
+                        player.printMarket();
+                        buyItemFromMarket();
+                    } else if (command.equals(KeyboardInput.GameChoice.NO)) {
+                        break;
+                    } else {
+                        System.out.println("Wrong command, try again.");
+                    }
+                }
+                if (player.getMarket().isEmpty()) {
+                    System.out.println("There's nothing more to buy right now.");
+                }
+            } else if (command.equals(KeyboardInput.GameChoice.SELL)) {
+                // selling an object from inventory
+                while (inventoryHasSomething()) {
+                    System.out.println("Choose which kind of object you want to sell: " +
+                            KeyboardInput.GameChoice.SELL_ITEM.getCommand() + ", " +
+                            KeyboardInput.GameChoice.SELL_COMPONENT.getCommand() + ", " +
+                            KeyboardInput.GameChoice.SELL_MATERIAL.getCommand() + ", " +
+                            KeyboardInput.GameChoice.RETURN.getCommand() + "\n");
+                    command = KeyboardInput.gameChoice();
+                    if (command.equals(KeyboardInput.GameChoice.SELL_ITEM)) {
+                        // selling item
+
+                    } else if (command.equals(KeyboardInput.GameChoice.SELL_COMPONENT)) {
+                        // selling component
+                    } else if (command.equals(KeyboardInput.GameChoice.SELL_MATERIAL)) {
+                        // selling material
+                    } else if (command.equals(KeyboardInput.GameChoice.RETURN)) {
+
+                    } else {
+                        System.out.println("Wrong command, try again.");
+                    }
+                }
+                if (!inventoryHasSomething()) {
+                    System.out.println("You don't have anything to sell right now.");
+                }
+            } else if (command.equals(KeyboardInput.GameChoice.RETURN)) {
+                stayAtMarket = false;
+            }
+
+            // leaving market
+            System.out.println("Stay at the market?\n(" +
+                    KeyboardInput.GameChoice.YES.getCommand() + " or " +
+                    KeyboardInput.GameChoice.NO.getCommand() + "): ");
+            command = KeyboardInput.gameChoice();
+            if (command.equals(KeyboardInput.GameChoice.YES)) {
+                continue;
+            } else if (command.equals(KeyboardInput.GameChoice.NO)) {
+                stayAtMarket = false;
+            } else {
+                System.out.println("Wrong command, try again.");
+            }
+        }
+    }
+
+    // buying Magical Item from the market
+    private static Player.TransactionStatus buyItemFromMarket() {
+        // choose item to buy
+        System.out.print("Choose item from the market (type in the number): ");
+        MagicalItem chosenItem = (MagicalItem) getObjectByIndex(player.getMarket());
+        // perform transaction operation
+        Player.TransactionStatus transactionStatus = chosenItem.buy(player);
+        if (transactionStatus.equals(Player.TransactionStatus.BOUGHT_SUCCESSFULLY)) {
+            System.out.println("Item bought successfully.");
+        } else if (transactionStatus.equals(Player.TransactionStatus.NOT_ENOUGH_MONEY)) {
+            System.out.println("You don't have enough money to buy this.");
+        } else if (transactionStatus.equals(Player.TransactionStatus.OBJECT_NOT_AVAILABLE)) {
+            System.out.println("This item is not available at the market right now.");
+            // this case if put in case of item disappearing from the market during performing transaction
+            // due to multithreading
+        }
+        return transactionStatus;
+    }
+
+    // checking if Player has anything in the inventory
+    private static boolean inventoryHasSomething () {
+        return !(player.getMagicalItems().isEmpty() && player.getMagicalComponents().isEmpty() && player.getMagicalMaterials().isEmpty());
+    }
+
 }
+

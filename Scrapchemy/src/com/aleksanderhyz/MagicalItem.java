@@ -29,6 +29,9 @@ public class MagicalItem extends MagicalObject {
             }
         } else {
             return Player.TransactionStatus.OBJECT_NOT_AVAILABLE;
+            // option included in case of program somehow chooses item from a different list
+            // for example, if item would be chosen by name or ID
+            // or in case of multithreading, when program deletes item from the Market while Player was trying to perform transaction
         }
     }
 
