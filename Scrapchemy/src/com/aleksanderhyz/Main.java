@@ -68,13 +68,13 @@ public class Main {
                 goToMarket();
             } else if (command.equals(KeyboardInput.GameChoice.GO_TO_INVENTORY)) {
                 // going to inventory to see what's there and process Magical Objects into different ones
-                goToInventory();
+                //goToInventory();
             } else if (command.equals(KeyboardInput.GameChoice.GO_TO_COMMISSIONS)) {
                 // looking at commissions to check needed ingredients and fulfill them
 
             } else if (command.equals(KeyboardInput.GameChoice.PAUSE_GAME)) {
                 // pausing the game to save or quit
-                pauseMenu();
+                //pauseMenu();
             } else {
                 System.out.println("Wrong command.");
             }
@@ -97,12 +97,12 @@ public class Main {
     }
 
     // Unicode for used symbols:
-    // \u20AC - Euro currency symbol
+    // \u00A4 - Generic currency sign
 
     // standard Player status display
     private static void playerStatusDisplay() {
         System.out.println(player.getName() + "'s current status:\n" +
-                "Money: " + player.getWallet() + " \u20AC\n" +
+                "Money: " + player.getWallet() + " \u00A4\n" +
                 "Commissions completed: " + player.getCommissionsCompleted() + "\n\n" +
                 "Items in inventory: " + player.getMagicalItems().size() + "\n" +
                 "Components in inventory: " + player.getMagicalComponents().size() + "\n" +
@@ -134,12 +134,11 @@ public class Main {
 
     // general market method
     private static void goToMarket () {
-        boolean stayAtMarket = true;
 
         System.out.println("Currently available at the market:");
         player.printMarket();
 
-        while (stayAtMarket) {
+        while (true) {
             System.out.println("\n Choose your action: " +
                     KeyboardInput.GameChoice.BUY.getCommand() + ", " +
                     KeyboardInput.GameChoice.SELL.getCommand() + ", " +
@@ -148,9 +147,10 @@ public class Main {
 
             if (command.equals(KeyboardInput.GameChoice.BUY)) {
                 // buying new item
-                Player.TransactionStatus transactionStatus = buyItemFromMarket();
-                // buying more items
                 while (!player.getMarket().isEmpty()) {
+                    buyItemFromMarket();
+                    System.out.println("Your wallet: " + player.getWallet() + " \u00A4");
+                    // buying more items
                     System.out.println("Do you wish to buy another item?\n(" +
                             KeyboardInput.GameChoice.YES.getCommand() + " or " +
                             KeyboardInput.GameChoice.NO.getCommand() + "): ");
@@ -158,6 +158,7 @@ public class Main {
                     if (command.equals(KeyboardInput.GameChoice.YES)) {
                         player.printMarket();
                         buyItemFromMarket();
+                        System.out.println("Your wallet: " + player.getWallet() + " \u00A4");
                     } else if (command.equals(KeyboardInput.GameChoice.NO)) {
                         break;
                     } else {
@@ -170,21 +171,18 @@ public class Main {
             } else if (command.equals(KeyboardInput.GameChoice.SELL)) {
                 // selling an object from inventory
                 while (inventoryHasSomething()) {
-                    System.out.println("Choose which kind of object you want to sell: " +
-                            KeyboardInput.GameChoice.SELL_ITEM.getCommand() + ", " +
-                            KeyboardInput.GameChoice.SELL_COMPONENT.getCommand() + ", " +
-                            KeyboardInput.GameChoice.SELL_MATERIAL.getCommand() + ", " +
-                            KeyboardInput.GameChoice.RETURN.getCommand() + "\n");
+                    sellObject();
+                    // selling more objects
+                    System.out.println("Do you wish to sell another item?\n(" +
+                            KeyboardInput.GameChoice.YES.getCommand() + " or " +
+                            KeyboardInput.GameChoice.NO.getCommand() + "): ");
                     command = KeyboardInput.gameChoice();
-                    if (command.equals(KeyboardInput.GameChoice.SELL_ITEM)) {
-                        // selling item
-
-                    } else if (command.equals(KeyboardInput.GameChoice.SELL_COMPONENT)) {
-                        // selling component
-                    } else if (command.equals(KeyboardInput.GameChoice.SELL_MATERIAL)) {
-                        // selling material
-                    } else if (command.equals(KeyboardInput.GameChoice.RETURN)) {
-
+                    if (command.equals(KeyboardInput.GameChoice.YES)) {
+                        if(sellObject().equals(Player.TransactionStatus.SOLD_SUCCESSFULLY)){
+                            System.out.println("Your wallet: " + player.getWallet() + " \u00A4");
+                        }
+                    } else if (command.equals(KeyboardInput.GameChoice.NO)) {
+                        break;
                     } else {
                         System.out.println("Wrong command, try again.");
                     }
@@ -193,7 +191,7 @@ public class Main {
                     System.out.println("You don't have anything to sell right now.");
                 }
             } else if (command.equals(KeyboardInput.GameChoice.RETURN)) {
-                stayAtMarket = false;
+                break;
             }
 
             // leaving market
@@ -204,7 +202,7 @@ public class Main {
             if (command.equals(KeyboardInput.GameChoice.YES)) {
                 continue;
             } else if (command.equals(KeyboardInput.GameChoice.NO)) {
-                stayAtMarket = false;
+                break;
             } else {
                 System.out.println("Wrong command, try again.");
             }
@@ -213,6 +211,8 @@ public class Main {
 
     // buying Magical Item from the market
     private static Player.TransactionStatus buyItemFromMarket() {
+        // show what's available
+        player.printMarket();
         // choose item to buy
         System.out.print("Choose item from the market (type in the number): ");
         MagicalItem chosenItem = (MagicalItem) getObjectByIndex(player.getMarket());
@@ -232,7 +232,67 @@ public class Main {
 
     // checking if Player has anything in the inventory
     private static boolean inventoryHasSomething () {
-        return !(player.getMagicalItems().isEmpty() && player.getMagicalComponents().isEmpty() && player.getMagicalMaterials().isEmpty());
+        return !(player.getMagicalItems().isEmpty() &&
+                player.getMagicalComponents().isEmpty() &&
+                player.getMagicalMaterials().isEmpty());
+    }
+
+    // selling a magical object from inventory
+        // this method suffers too much code repetition
+        // it should get remade later
+        // that will probably require changes in the called class methods
+    private static Player.TransactionStatus sellObject () {
+        System.out.println("Choose which kind of object you want to sell: " +
+                KeyboardInput.GameChoice.SELL_ITEM.getCommand() + ", " +
+                KeyboardInput.GameChoice.SELL_COMPONENT.getCommand() + ", " +
+                KeyboardInput.GameChoice.SELL_MATERIAL.getCommand() + ", " +
+                KeyboardInput.GameChoice.RETURN.getCommand() + "\n");
+        command = KeyboardInput.gameChoice();
+        if (command.equals(KeyboardInput.GameChoice.SELL_ITEM)) {
+            // selling item
+            if (player.getMagicalItems().isEmpty()) {
+                System.out.println("You don't have any items to sell.");
+                return Player.TransactionStatus.OBJECT_NOT_AVAILABLE;
+            } else {
+                // choose item to sell
+                System.out.println("Available items:");
+                player.printInventory(player.getMagicalItems());
+                System.out.println("Choose item to sell: ");
+                MagicalItem magicalItem = (MagicalItem) getObjectByIndex(player.getMagicalItems());
+                return magicalItem.sell(player);
+            }
+        } else if (command.equals(KeyboardInput.GameChoice.SELL_COMPONENT)) {
+            // selling component
+            if (player.getMagicalComponents().isEmpty()) {
+                System.out.println("You don't have any components to sell.");
+                return Player.TransactionStatus.OBJECT_NOT_AVAILABLE;
+            } else {
+                // choose component to sell
+                System.out.println("Available components:");
+                player.printInventory(player.getMagicalComponents());
+                System.out.println("Choose component to sell: ");
+                MagicalItemComponent magicalItemComponent = (MagicalItemComponent) getObjectByIndex(player.getMagicalComponents());
+                return magicalItemComponent.sell(player);
+            }
+        } else if (command.equals(KeyboardInput.GameChoice.SELL_MATERIAL)) {
+            // selling material
+            if (player.getMagicalMaterials().isEmpty()) {
+                System.out.println("You don't have any materials to sell.");
+                return Player.TransactionStatus.OBJECT_NOT_AVAILABLE;
+            } else {
+                // choose material to sell
+                System.out.println("Available materials:");
+                player.printInventory(player.getMagicalMaterials());
+                System.out.println("Choose material to sell (you'll sell your whole stock of it): ");
+                MagicalMaterial magicalMaterial = (MagicalMaterial) getObjectByIndex(player.getMagicalMaterials());
+                return magicalMaterial.sell(player);
+            }
+        } else if (command.equals(KeyboardInput.GameChoice.RETURN)) {
+            return Player.TransactionStatus.TRANSACTION_CANCELLED;
+        } else {
+            System.out.println("Wrong command, try again.");
+            return Player.TransactionStatus.TRANSACTION_CANCELLED;
+        }
     }
 
 }

@@ -51,7 +51,8 @@ public class Player {
         BOUGHT_SUCCESSFULLY,
         SOLD_SUCCESSFULLY,
         OBJECT_NOT_AVAILABLE,
-        NOT_ENOUGH_MONEY
+        NOT_ENOUGH_MONEY,
+        TRANSACTION_CANCELLED
     }
 
     public double getWallet() {
@@ -116,7 +117,7 @@ public class Player {
     // showing list of items for sale, with numbers and prices
     public void printMarket () {
         for (int i = 0; i < market.size(); i++ ) {
-            System.out.println(i+1 + ". " + market.get(i).toString() + ", " + market.get(i).getPrice() + " \u20AC" /*Euro currency symbol*/);
+            System.out.println(i+1 + ". " + market.get(i).toString() + ", " + market.get(i).getPrice() + " \u00A4" /*Euro currency symbol*/);
             // .toString is overridden in MagicalObject subclasses to show proper data
         }
     }
