@@ -1,9 +1,6 @@
 This game is an exercise project for using Java with SQLite3.
 Written in IntelliJ IDEA, using SQLite JDBC 3.23.1 library
 
-NOTE: Very early stage, no tests yet
-NOTE: SQLite part of code hasn't been written yet
-
 You're a young alchemist who has knowledge and equipment but lacks a proper licence to produce fine magical items.
 Thus, to make a living you're limited to buy used, junked magical weapons in various state of wear in order to get scrap material for making and selling bootleg magical substances.
 Keep in mind whether the items you're buying are cursed or not, it may be important.
@@ -62,3 +59,12 @@ Curse is a boolean value, a Magical Object can either be cursed or not cursed.
 When the player creates a Magical Product the smallest amount of cursed Material makes it whole cursed.
 Wood used to burn and heat the made Product also passes on the curse.
 Customers may either require the Product to be cursed, to be pure from any curse or it may not matter for them.
+
+Saving and loading game:
+Data about game progress is saved into a .db file. All needed data is held in the Player class and objects assigned to it (references to them being on lists).
+Magical Object data saved in the save .db file is limited to minimum, whatever can be read from the Scrapchemy_database.db file, like names, mass, base price etc., is not saved in the save file.
+Save file contains only id's and information about values that were generated at random (like quality, material etc.). Values that can be calculated again are calculated again during loading save file.
+That way if there are updates to Scrapchemy_database.db or the way of calculating values, the Magical Objects from saved file can be automatically updated according to the changes in database or code.
+For that to work without errors there need to be kept rules about making changes in the game database, like not changing id's of objects, no complete deletion of old objects or changing older completely, making it unsuitable for what it used for so far.
+Otherwise, if at some point changes like that would be inevitable (like certain Magical Object having to be get rid of) the program will have to be aware of such cases and have prepared special operations for each specific incompability.
+Name of the saved file is derived from Player's name, which is defined when new game is started. Thus if a new game is started with the same name chosen and it's saved, it overwrites the old file.
