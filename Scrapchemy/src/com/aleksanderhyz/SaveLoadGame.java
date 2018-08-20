@@ -11,6 +11,8 @@ import java.sql.SQLException;
 public class SaveLoadGame {
 
     public static final String SAVE_CONNECTION_PATH = "jdbc:sqlite:src\\saved_games\\";
+    // the path is incomplete, it requires file name to be added before opening
+        // that operation is performed in open() method
 
     /* Save game database file structure */
 
@@ -95,15 +97,20 @@ public class SaveLoadGame {
 
     /* prepared statements: */
 
+    /* saving data: */
+
+    //
 
 
     private Connection connection;
 
     // opening and closing save file
 
-    public boolean open() {
+    public boolean open(String playerName) {
+        StringBuilder saveFileName = new StringBuilder(playerName + ".db");
+
         try {
-            connection = DriverManager.getConnection(SAVE_CONNECTION_PATH);
+            connection = DriverManager.getConnection(SAVE_CONNECTION_PATH + saveFileName.toString());
 
             return true;
         } catch (SQLException e) {
@@ -120,6 +127,45 @@ public class SaveLoadGame {
             }
         } catch (SQLException e) {
             System.out.println("Couldn't close connection: " + e.getMessage());
+        }
+    }
+
+    /* saving data: */
+
+    public enum SaveGameStatus {
+        SAVED_SUCCESSFULLY,
+        SAVING_FAILED
+    }
+
+
+    // save game
+    public SaveGameStatus saveGame (Player player) {
+        if (open(player.getName())) {
+            try {
+                connection.setAutoCommit(false);
+
+
+            } catch (Exception e0) {
+                System.out.println("Saving game exception: " + e0.getMessage());
+                try {
+                    System.out.println("Performing rollback.");
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    System.out.println("Rollback failed: " + e1.getMessage());
+                }
+            } finally {
+                try {
+                    connection.setAutoCommit(true);
+                } catch (SQLException e) {
+                    System.out.println("Couldn't reset autocommit: " + e.getMessage());
+                }
+            }
+
+            close();
+            return SaveGameStatus.SAVED_SUCCESSFULLY;
+        } else {
+            close();
+            return SaveGameStatus.SAVING_FAILED;
         }
     }
 }
