@@ -2,7 +2,6 @@ package com.aleksanderhyz;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  *  Singleton class that defines the game progress
@@ -307,13 +306,13 @@ public class Player {
     // in that way there won't be a problem with different order of ingredients required and given ones
     // also it will be easier to use materials from different stocks (of different quality and curse status) as one ingredient
 
-    public MaterialCheck materialCheck (MagicalProduct.MagicalProductIngredient magicalProductIngredient, MagicalMaterial chosenMagicalMaterial, MagicalProduct.RequiredCursedStatus requiredCursedStatus) {
+    public MaterialCheck materialCheck (MagicalProduct.MagicalProductIngredient magicalProductIngredient, MagicalMaterial chosenMagicalMaterial, MagicalProduct.RequiredCurseStatus requiredCurseStatus) {
 
         // first check id
         if (chosenMagicalMaterial.getId().equals(magicalProductIngredient.getMaterialID())) {
 
             // if the product's required status is CLEAN then no used material can be cursed
-            if (requiredCursedStatus.equals(MagicalProduct.RequiredCursedStatus.CLEAN)) {
+            if (requiredCurseStatus.equals(MagicalProduct.RequiredCurseStatus.CLEAN)) {
                 if (chosenMagicalMaterial.isCursed()) {
                     return MaterialCheck.MATERIAL_CURSED;
                 } // if else just go on
@@ -343,7 +342,7 @@ public class Player {
         if (chosenFuel.getMaterialGroup().equals(MagicalMaterial.WOOD_GROUP_ID)) {
 
             // if the product's required status is CLEAN then fuel can't be cursed
-            if (magicalProduct.getRequiredCursedStatus().equals(MagicalProduct.RequiredCursedStatus.CLEAN)) {
+            if (magicalProduct.getRequiredCurseStatus().equals(MagicalProduct.RequiredCurseStatus.CLEAN)) {
                 if (chosenFuel.isCursed()) {
                     return MaterialCheck.MATERIAL_CURSED;
                 }

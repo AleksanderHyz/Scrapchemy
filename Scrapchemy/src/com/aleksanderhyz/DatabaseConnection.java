@@ -90,35 +90,35 @@ public class DatabaseConnection {
 //    private PreparedStatement countRows;
 
     // get Magical Materials from a Group
-    public static final String GET_MATERIALS_FROM_GROUP =
+    private static final String GET_MATERIALS_FROM_GROUP =
             "SELECT " + MAGICAL_MATERIAL_ID_COLUMN +
             " FROM [" + MAGICAL_MATERIAL_TABLE +
             "] WHERE [" + MAGICAL_MATERIAL_GROUP_COLUMN + "] = ?";
     private PreparedStatement getMaterialsFromGroup;
 
     // get Magical Material by _id:
-    public static final String GET_MAGICAL_MATERIAL_BY_ID =
+    private static final String GET_MAGICAL_MATERIAL_BY_ID =
                     "SELECT " + "*" +
                     " FROM [" + MAGICAL_MATERIAL_TABLE +
                     "] WHERE [" + MAGICAL_MATERIAL_ID_COLUMN + "] = ?";
     private PreparedStatement getMagicalMaterialByID;
 
     // get Magical Item from table by _id:
-    public static final String GET_MAGICAL_ITEM_BY_ID =
+    private static final String GET_MAGICAL_ITEM_BY_ID =
             "SELECT " + "*" +
             " FROM [" + MAGICAL_ITEM_TABLE +
             "] WHERE " + MAGICAL_ITEM_ID_COLUMN + " = ?";
     private PreparedStatement getMagicalItemByID;
 
     // get Magical Item Component from table by _id:
-    public static final String GET_MAGICAL_ITEM_COMPONENT_BY_ID =
+    private static final String GET_MAGICAL_ITEM_COMPONENT_BY_ID =
             "SELECT " + "*" +
             " FROM [" + MAGICAL_ITEM_COMPONENT_TABLE +
             "] WHERE " + MAGICAL_ITEM_COMPONENT_ID_COLUMN + " = ?";
     private PreparedStatement getMagicalItemComponentByID;
 
     // get Magical Product from table by _id:
-    public static final String GET_MAGICAL_PRODUCT_BY_ID =
+    private static final String GET_MAGICAL_PRODUCT_BY_ID =
             "SELECT " + "*" +
             " FROM [" + MAGICAL_PRODUCT_TABLE +
             "] WHERE " + MAGICAL_PRODUCT_ID_COLUMN + " = ?";

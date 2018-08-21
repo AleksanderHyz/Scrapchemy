@@ -11,19 +11,19 @@ import java.util.Random;
 
 public class MagicalProduct extends MagicalObject {
 
-    private RequiredCursedStatus requiredCursedStatus;
+    private RequiredCurseStatus requiredCurseStatus;
     private double fuelMass;
     // as a fuel there can be used any material from Wood group (that isn't used as an ingredient for this Product)
         // Wood group _id = 1
     private List<MagicalProductIngredient> ingredients;
     private int commissionNumber;
 
-    protected enum RequiredCursedStatus {
+    protected enum RequiredCurseStatus {
         CURSED,     // 0
         CLEAN,      // 1
         NO_MATTER;  // 2, 3, 4, 5
 
-        private static RequiredCursedStatus rollStatus () {
+        private static RequiredCurseStatus rollStatus () {
             Random random = new Random();
             int roll = random.nextInt(6);
             if (roll == 0) {
@@ -89,14 +89,14 @@ public class MagicalProduct extends MagicalObject {
 
         this.fuelMass = productFuelMass;
         this.ingredients = magicalProductIngredients;
-        this.requiredCursedStatus = RequiredCursedStatus.rollStatus();
+        this.requiredCurseStatus = RequiredCurseStatus.rollStatus();
         this.commissionNumber = hashCode();
 
         //generate full name:
             // [CURSED/CLEAN/null] [name]
         StringBuilder commissionFullName = new StringBuilder();
-        if (!this.requiredCursedStatus.equals(RequiredCursedStatus.NO_MATTER)) {
-            commissionFullName.append(this.requiredCursedStatus.toString());
+        if (!this.requiredCurseStatus.equals(RequiredCurseStatus.NO_MATTER)) {
+            commissionFullName.append(this.requiredCurseStatus.toString());
         }
         commissionFullName.append(productName);
         this.name = commissionFullName.toString();
@@ -135,8 +135,8 @@ public class MagicalProduct extends MagicalObject {
         }
     }
 
-    public RequiredCursedStatus getRequiredCursedStatus() {
-        return requiredCursedStatus;
+    public RequiredCurseStatus getRequiredCurseStatus() {
+        return requiredCurseStatus;
     }
 
     public double getFuelMass() {

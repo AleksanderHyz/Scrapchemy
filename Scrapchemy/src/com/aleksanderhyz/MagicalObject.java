@@ -116,6 +116,10 @@ public abstract class MagicalObject {
         return cursed;
     }
 
+    public String getId() {
+        return id;
+    }
+
     abstract void calculatePrice();
 
     // "buy" operation is in the MagicalItem class, because that's the only kind of MagicalObject the Player can buy
