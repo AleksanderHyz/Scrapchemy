@@ -1,9 +1,6 @@
 package com.aleksanderhyz;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +17,7 @@ public class SaveLoadGame {
     /* Save game database file structure */
 
     // player data
-    public static final String PLAYER_DATA_TABLE = "Player data";
+    public static final String PLAYER_DATA_TABLE = "player data";
     public static final String PLAYER_DATA_NAME_COLUMN = "name";                                        // TEXT NOT NULL
     public static final int PLAYER_DATA_NAME_INDEX = 1;
     public static final String PLAYER_DATA_COMMISSIONS_COMPLETED_COLUMN = "commissions completed";      // INTEGER NOT NULL
@@ -79,7 +76,7 @@ public class SaveLoadGame {
     public static final int MAGICAL_MATERIALS_CURSED_INDEX = 4;
 
     // market
-    public static final String MARKET_TABLE = "magical items";
+    public static final String MARKET_TABLE = "market";
     public static final String MARKET_ITEM_ID_COLUMN = "item id";                            // INTEGER
     public static final int MARKET_ITEM_ID_INDEX = 1;
     public static final String MARKET_CURSED_COLUMN = "cursed";                              // INTEGER
@@ -140,7 +137,7 @@ public class SaveLoadGame {
                     "[" + MAGICAL_ITEMS_COMPONENT2_MATERIAL_COLUMN + "], " +
                     "[" + MAGICAL_ITEMS_COMPONENT2_QUALITY_COLUMN + "], " +
                     "[" + MAGICAL_ITEMS_COMPONENT3_MATERIAL_COLUMN + "], " +
-                    "[" + MAGICAL_ITEMS_COMPONENT3_QUALITY_COLUMN + "]), " +
+                    "[" + MAGICAL_ITEMS_COMPONENT3_QUALITY_COLUMN + "]) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private PreparedStatement insertItem;
 
@@ -150,7 +147,7 @@ public class SaveLoadGame {
                     "([" + MAGICAL_MATERIALS_MATERIAL_ID_COLUMN + "], " +
                     "[" + MAGICAL_MATERIALS_QUALITY_COLUMN + "], " +
                     "[" + MAGICAL_MATERIALS_MASS_COLUMN + "], " +
-                    "[" + MAGICAL_MATERIALS_CURSED_COLUMN + "]), " +
+                    "[" + MAGICAL_MATERIALS_CURSED_COLUMN + "]) " +
                     "VALUES (?, ?, ?, ?)";
     private PreparedStatement insertMaterial;
 
@@ -164,7 +161,7 @@ public class SaveLoadGame {
                     "[" + MARKET_COMPONENT2_MATERIAL_COLUMN + "], " +
                     "[" + MARKET_COMPONENT2_QUALITY_COLUMN + "], " +
                     "[" + MARKET_COMPONENT3_MATERIAL_COLUMN + "], " +
-                    "[" + MARKET_COMPONENT3_QUALITY_COLUMN + "]), " +
+                    "[" + MARKET_COMPONENT3_QUALITY_COLUMN + "]) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private PreparedStatement insertMarketItem;
 
@@ -173,10 +170,13 @@ public class SaveLoadGame {
     // opening and closing save file
 
     public boolean open(String playerName) {
-        StringBuilder saveFileName = new StringBuilder(playerName + ".db");
+        String saveFileName = playerName + ".db";
 
         try {
-            connection = DriverManager.getConnection(SAVE_CONNECTION_PATH + saveFileName.toString());
+            connection = DriverManager.getConnection(SAVE_CONNECTION_PATH + saveFileName);
+
+            // create the tables ( with "IF NOT EXISTS" clause):
+            createSaveFileTables();
 
             insertPlayerData = connection.prepareStatement(INSERT_PLAYER_DATA);
             insertCommission = connection.prepareStatement(INSERT_COMMISSION);
@@ -241,17 +241,14 @@ public class SaveLoadGame {
                 // set Auto Commit to false to perform rollback in case error occurs in the middle of saving data
                 connection.setAutoCommit(false);
 
-                /**
-                 *  put CREATE TABLE methods here!!!
-                 */
-
                 if (
+                        // fill the tables with records:
                         savePlayerData(player) &&
                         saveCommissions(player) &&
                         saveMagicalComponents(player) &&
                         saveMagicalItems(player) &&
                         saveMagicalMaterial(player) &&
-                        saeMarket(player)
+                        saveMarket(player)
                         ) {
                     saveGameStatus = SaveGameStatus.SAVED_SUCCESSFULLY;
                 }
@@ -279,11 +276,70 @@ public class SaveLoadGame {
         return saveGameStatus;
     }
 
+    private boolean createSaveFileTables() {
+
+        boolean success = true;
+
+        String createPlayerDataTable = "CREATE TABLE IF NOT EXISTS \"" + PLAYER_DATA_TABLE + "\" " +
+                "( `" + PLAYER_DATA_NAME_COLUMN + "` TEXT NOT NULL, " +
+                "`" + PLAYER_DATA_COMMISSIONS_COMPLETED_COLUMN + "` INTEGER NOT NULL, " +
+                "`" + PLAYER_DATA_WALLET_COLUMN + "` REAL )";
+        String createCommissionsTable = "CREATE TABLE IF NOT EXISTS \"commissions\" " +
+                "( `number` INTEGER NOT NULL, " +
+                "`product id` INTEGER NOT NULL, " +
+                "`required curse status` INTEGER NOT NULL )";
+        String createMagicalComponentsTable = "CREATE TABLE IF NOT EXISTS \"magical components\" " +
+                "( `component id` INTEGER NOT NULL, " +
+                "`material` INTEGER, " +
+                "`quality` INTEGER, " +
+                "`cursed` INTEGER )";
+        String createMagicalItemsTable = "CREATE TABLE IF NOT EXISTS \"magical items\" " +
+                "( `item id` INTEGER NOT NULL, " +
+                "`cursed` INTEGER, " +
+                "`component1 material` INTEGER, " +
+                "`component1 quality` INTEGER, " +
+                "`component2 material` INTEGER, " +
+                "`component2 quality` INTEGER, " +
+                "`component3 material` INTEGER, " +
+                "`component3 quality` INTEGER )";
+        String createMagicalMaterialsTable = "CREATE TABLE IF NOT EXISTS \"magical materials\" " +
+                "( `material id` INTEGER NOT NULL, " +
+                "`quality` INTEGER, " +
+                "`mass` REAL, " +
+                "`cursed` INTEGER )";
+        String createMarketTable = "CREATE TABLE IF NOT EXISTS \"market\" " +
+                "( `item id` INTEGER NOT NULL, " +
+                "`cursed` INTEGER, " +
+                "`component1 material` INTEGER, " +
+                "`component1 quality` INTEGER, " +
+                "`component2 material` INTEGER, " +
+                "`component2 quality` INTEGER, " +
+                "`component3 material` INTEGER, " +
+                "`component3 quality` INTEGER )";
+
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute(createPlayerDataTable);
+            statement.execute(createCommissionsTable);
+            statement.execute(createMagicalComponentsTable);
+            statement.execute(createMagicalItemsTable);
+            statement.execute(createMagicalMaterialsTable);
+            statement.execute(createMarketTable);
+
+        } catch (SQLException e) {
+            success = false;
+            System.out.println("Couldn't create the tables: " + e.getMessage());
+        }
+
+        return success;
+    }
+
     private boolean savePlayerData(Player player) {
 
         boolean success = true;
 
         try {
+
             String name = player.getName();
             int commissionsCompleted = player.getCommissionsCompleted();
             double wallet = player.getWallet();
@@ -291,6 +347,8 @@ public class SaveLoadGame {
             insertPlayerData.setString(1, name);
             insertPlayerData.setInt(2, commissionsCompleted);
             insertPlayerData.setDouble(3, wallet);
+
+            insertPlayerData.executeUpdate();
 
         } catch (SQLException e) {
             success = false;
@@ -307,6 +365,7 @@ public class SaveLoadGame {
         try {
             List<MagicalProduct> commissions = new ArrayList<>(player.getCommissionList());
             for (MagicalProduct commission : commissions) {
+
                 int number = commission.getCommissionNumber();
                 int productID = Integer.parseInt(commission.getId());
                 // required curse status is kept in .db file as integer,
@@ -315,14 +374,18 @@ public class SaveLoadGame {
                 // 1 - CLEAN
                 // 2 - NO_MATTER
                 int requiredCurseStatus = 2;
+
                 if (commission.getRequiredCurseStatus().equals(MagicalProduct.RequiredCurseStatus.CURSED)) {
                     requiredCurseStatus = 0;
                 } else if (commission.getRequiredCurseStatus().equals(MagicalProduct.RequiredCurseStatus.CLEAN)) {
                     requiredCurseStatus = 1;
                 } // else, it stays as 2
+
                 insertCommission.setInt(1, number);
                 insertCommission.setInt(2, productID);
                 insertCommission.setInt(3, requiredCurseStatus);
+
+                insertCommission.executeUpdate();
             }
         } catch (SQLException e) {
             success = false;
@@ -339,14 +402,18 @@ public class SaveLoadGame {
         try {
             List<MagicalItemComponent> magicalItemComponents = new ArrayList<>(player.getMagicalComponents());
             for (MagicalItemComponent component : magicalItemComponents) {
+
                 int componentID = Integer.parseInt(component.getId());
                 int material = Integer.parseInt(component.getMaterialID());
                 int quality = component.getQuality().getValue();
                 int cursed = (component.isCursed()) ? 1 : 0;
+
                 insertComponent.setInt(1, componentID);
                 insertComponent.setInt(2, material);
                 insertComponent.setInt(3, quality);
                 insertComponent.setInt(4, cursed);
+
+                insertComponent.executeUpdate();
             }
         } catch (SQLException e) {
             success = false;
@@ -364,10 +431,105 @@ public class SaveLoadGame {
             List<MagicalItem> magicalItems = new ArrayList<>(player.getMagicalItems());
             for (MagicalItem magicalItem : magicalItems) {
 
+                int itemID = Integer.parseInt(magicalItem.getId());
+                int cursed = (magicalItem.isCursed()) ? 1 : 0;
+
+                insertItem.setInt(1, itemID);
+                insertItem.setInt(2, cursed);
+
+                int i = 3;
+                for (MagicalItemComponent component : magicalItem.getComponents()) {
+                    // 3 - component1 material index
+                    // 4 - component1 quality index
+                    // 5 - component2 material index
+                    // 6 - component2 quality index
+                    // 7 - component3 material index
+                    // 8 - component3 quality index
+                    int componentMaterial = Integer.parseInt(component.getMaterialID());
+                    int componentQuality = component.getQuality().getValue();
+
+                    insertItem.setInt(i, componentMaterial);
+                    insertItem.setInt(i+1, componentQuality);
+
+                    i += 2;
+                }
+
+                insertItem.executeUpdate();
             }
         } catch (SQLException e) {
             success = false;
             System.out.println("Couldn't save items: " + e.getMessage());
+        }
+
+        return success;
+    }
+
+    private boolean saveMagicalMaterial(Player player) {
+
+        boolean success = true;
+
+        try {
+            List<MagicalMaterial> magicalMaterials = new ArrayList<>(player.getMagicalMaterials());
+            for (MagicalMaterial magicalMaterial : magicalMaterials) {
+
+                int materialID = Integer.parseInt(magicalMaterial.getId());
+                int materialQuality = magicalMaterial.getQuality().getValue();
+                double materialMass = magicalMaterial.getMass();
+                int cursed = (magicalMaterial.isCursed()) ? 1 : 0;
+
+                insertMaterial.setInt(1, materialID);
+                insertMaterial.setInt(2, materialQuality);
+                insertMaterial.setDouble(3, materialMass);
+                insertMaterial.setInt(4, cursed);
+
+                insertMaterial.executeUpdate();
+            }
+
+        } catch (SQLException e) {
+            success = false;
+            System.out.println("Couldn't save materials: " + e.getMessage());
+        }
+
+        return success;
+    }
+
+    private boolean saveMarket(Player player) {
+
+        boolean success = true;
+
+        try {
+            List<MagicalItem> marketItems = new ArrayList<>(player.getMarket());
+            for (MagicalItem marketItem : marketItems) {
+
+                int itemID = Integer.parseInt(marketItem.getId());
+                int cursed = (marketItem.isCursed()) ? 1 : 0;
+
+                insertMarketItem.setInt(1, itemID);
+                insertMarketItem.setInt(2, cursed);
+
+                int i = 3;
+                for (MagicalItemComponent component : marketItem.getComponents()) {
+                    // 3 - component1 material index
+                    // 4 - component1 quality index
+                    // 5 - component2 material index
+                    // 6 - component2 quality index
+                    // 7 - component3 material index
+                    // 8 - component3 quality index
+                    int componentMaterial = Integer.parseInt(component.getMaterialID());
+                    int componentQuality = component.getQuality().getValue();
+
+                    insertMarketItem.setInt(i, componentMaterial);
+                    insertMarketItem.setInt(i+1, componentQuality);
+
+                    i += 2;
+                }
+
+                insertMarketItem.executeUpdate();
+
+            }
+        } catch (SQLException e) {
+            success = false;
+            System.out.println("Couldn't save market: " + e.getMessage());
         }
 
         return success;

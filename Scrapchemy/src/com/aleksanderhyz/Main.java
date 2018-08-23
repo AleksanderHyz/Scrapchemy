@@ -14,6 +14,9 @@ public class Main {
     // instance of GameChoice responsible for recognizing commands written by the Player
     private static KeyboardInput.GameChoice command;
 
+    // instance of SaveLoadGame, used for saving and loading (in future) game status
+    private static SaveLoadGame saveLoadGame = new SaveLoadGame();
+
 
     public static void main(String[] args) {
 
@@ -375,11 +378,15 @@ public class Main {
     private static void pauseMenu(){
         System.out.println("GAME PAUSED\n" +
                 "Choose action: " +
+                KeyboardInput.GameChoice.SAVE_GAME.getCommand() + ", " +
                 KeyboardInput.GameChoice.RESUME_GAME.getCommand() + ", " +
                 KeyboardInput.GameChoice.QUIT.getCommand());
         while (true) {
             command = KeyboardInput.gameChoice();
-            if (command.equals(KeyboardInput.GameChoice.RESUME_GAME)) {
+            if (command.equals(KeyboardInput.GameChoice.SAVE_GAME)) {
+                System.out.println("SAVE GAME");
+                saveGame();
+            } else if (command.equals(KeyboardInput.GameChoice.RESUME_GAME)) {
                 System.out.println("RESUME GAME");
                 break;
             } else if (command.equals(KeyboardInput.GameChoice.QUIT)) {
@@ -389,6 +396,16 @@ public class Main {
             } else {
                 System.out.println("Wrong command, try again.");
             }
+        }
+    }
+
+    private static void saveGame() {
+        System.out.println("Saving game...");
+        SaveLoadGame.SaveGameStatus saveGameStatus = saveLoadGame.saveGame(player);
+        if (saveGameStatus.equals(SaveLoadGame.SaveGameStatus.SAVED_SUCCESSFULLY)) {
+            System.out.println("Saved game successfully!");
+        } else if (saveGameStatus.equals(SaveLoadGame.SaveGameStatus.SAVING_FAILED)) {
+            System.out.println("Saving game failed.");
         }
     }
 
