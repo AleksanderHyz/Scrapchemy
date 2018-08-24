@@ -54,7 +54,7 @@ public class MagicalItem extends MagicalObject {
         return components;
     }
 
-    // Magical Items can only be generated randomly, using data read from database
+    // new Magical Items can only be generated randomly, using data read from database
     protected MagicalItem() {
         super(null,null,0,false,null);
         // fields from MagicalObject: name, price, cursed, quality

@@ -51,18 +51,10 @@ public class SaveLoadGame {
     public static final int MAGICAL_ITEMS_ITEM_ID_INDEX = 1;
     public static final String MAGICAL_ITEMS_CURSED_COLUMN = "cursed";                              // INTEGER
     public static final int MAGICAL_ITEMS_CURSED_INDEX = 2;
-    public static final String MAGICAL_ITEMS_COMPONENT1_MATERIAL_COLUMN = "component1 material";    // INTEGER
-    public static final int MAGICAL_ITEMS_COMPONENT1_MATERIAL_INDEX = 3;
-    public static final String MAGICAL_ITEMS_COMPONENT1_QUALITY_COLUMN = "component1 quality";      // INTEGER
-    public static final int MAGICAL_ITEMS_COMPONENT1_QUALITY_INDEX = 4;
-    public static final String MAGICAL_ITEMS_COMPONENT2_MATERIAL_COLUMN = "component2 material";    // INTEGER
-    public static final int MAGICAL_ITEMS_COMPONENT2_MATERIAL_INDEX = 5;
-    public static final String MAGICAL_ITEMS_COMPONENT2_QUALITY_COLUMN = "component2 quality";      // INTEGER
-    public static final int MAGICAL_ITEMS_COMPONENT2_QUALITY_INDEX = 6;
-    public static final String MAGICAL_ITEMS_COMPONENT3_MATERIAL_COLUMN = "component3 material";    // INTEGER
-    public static final int MAGICAL_ITEMS_COMPONENT3_MATERIAL_INDEX = 7;
-    public static final String MAGICAL_ITEMS_COMPONENT3_QUALITY_COLUMN = "component3 quality";      // INTEGER
-    public static final int MAGICAL_ITEMS_COMPONENT3_QUALITY_INDEX = 8;
+    public static final String MAGICAL_ITEMS_COMPONENTS_MATERIALS_COLUMN = "components materials";  // TEXT
+    public static final int MAGICAL_ITEMS_COMPONENTS_MATERIALS_INDEX = 3;
+    public static final String MAGICAL_ITEMS_COMPONENTS_QUALITIES_COLUMN = "components qualities";  // TEXT
+    public static final int MAGICAL_ITEMS_COMPONENTS_QUALITIES_INDEX = 4;
 
     // magical materials
     public static final String MAGICAL_MATERIALS_TABLE = "magical materials";
@@ -81,18 +73,10 @@ public class SaveLoadGame {
     public static final int MARKET_ITEM_ID_INDEX = 1;
     public static final String MARKET_CURSED_COLUMN = "cursed";                              // INTEGER
     public static final int MARKET_CURSED_INDEX = 2;
-    public static final String MARKET_COMPONENT1_MATERIAL_COLUMN = "component1 material";    // INTEGER
-    public static final int MARKET_COMPONENT1_MATERIAL_INDEX = 3;
-    public static final String MARKET_COMPONENT1_QUALITY_COLUMN = "component1 quality";      // INTEGER
-    public static final int MARKET_COMPONENT1_QUALITY_INDEX = 4;
-    public static final String MARKET_COMPONENT2_MATERIAL_COLUMN = "component2 material";    // INTEGER
-    public static final int MARKET_COMPONENT2_MATERIAL_INDEX = 5;
-    public static final String MARKET_COMPONENT2_QUALITY_COLUMN = "component2 quality";      // INTEGER
-    public static final int MARKET_COMPONENT2_QUALITY_INDEX = 6;
-    public static final String MARKET_COMPONENT3_MATERIAL_COLUMN = "component3 material";    // INTEGER
-    public static final int MARKET_COMPONENT3_MATERIAL_INDEX = 7;
-    public static final String MARKET_COMPONENT3_QUALITY_COLUMN = "component3 quality";      // INTEGER
-    public static final int MARKET_COMPONENT3_QUALITY_INDEX = 8;
+    public static final String MARKET_COMPONENTS_MATERIALS_COLUMN = "components materials";  // TEXT
+    public static final int MARKET_COMPONENTS_MATERIALS_INDEX = 3;
+    public static final String MARKET_COMPONENTS_QUALITIES_COLUMN = "components qualities";  // TEXT
+    public static final int MARKET_COMPONENTS_QUALITIES_INDEX = 4;
 
 
     /* prepared statements: */
@@ -130,13 +114,9 @@ public class SaveLoadGame {
             "INSERT INTO [" + MAGICAL_ITEMS_TABLE + "] " +
                     "([" + MAGICAL_ITEMS_ITEM_ID_COLUMN + "], " +
                     "[" + MAGICAL_ITEMS_CURSED_COLUMN + "], " +
-                    "[" + MAGICAL_ITEMS_COMPONENT1_MATERIAL_COLUMN + "], " +
-                    "[" + MAGICAL_ITEMS_COMPONENT1_QUALITY_COLUMN + "], " +
-                    "[" + MAGICAL_ITEMS_COMPONENT2_MATERIAL_COLUMN + "], " +
-                    "[" + MAGICAL_ITEMS_COMPONENT2_QUALITY_COLUMN + "], " +
-                    "[" + MAGICAL_ITEMS_COMPONENT3_MATERIAL_COLUMN + "], " +
-                    "[" + MAGICAL_ITEMS_COMPONENT3_QUALITY_COLUMN + "]) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    "[" + MAGICAL_ITEMS_COMPONENTS_MATERIALS_COLUMN + "], " +
+                    "[" + MAGICAL_ITEMS_COMPONENTS_QUALITIES_COLUMN + "]) " +
+                    "VALUES (?, ?, ?, ?)";
     private PreparedStatement insertItem;
 
     // insert magical material
@@ -154,13 +134,9 @@ public class SaveLoadGame {
             "INSERT INTO [" + MARKET_TABLE + "] " +
                     "([" + MARKET_ITEM_ID_COLUMN + "], " +
                     "[" + MARKET_CURSED_COLUMN + "], " +
-                    "[" + MARKET_COMPONENT1_MATERIAL_COLUMN + "], " +
-                    "[" + MARKET_COMPONENT1_QUALITY_COLUMN + "], " +
-                    "[" + MARKET_COMPONENT2_MATERIAL_COLUMN + "], " +
-                    "[" + MARKET_COMPONENT2_QUALITY_COLUMN + "], " +
-                    "[" + MARKET_COMPONENT3_MATERIAL_COLUMN + "], " +
-                    "[" + MARKET_COMPONENT3_QUALITY_COLUMN + "]) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    "[" + MARKET_COMPONENTS_MATERIALS_COLUMN + "], " +
+                    "[" + MARKET_COMPONENTS_QUALITIES_COLUMN + "]) " +
+                    "VALUES (?, ?, ?, ?)";
     private PreparedStatement insertMarketItem;
 
     // delete all table data
@@ -168,7 +144,7 @@ public class SaveLoadGame {
 
     private Connection connection;
 
-    
+
     // opening and closing save file
 
     private boolean open(String playerName) {
@@ -291,38 +267,30 @@ public class SaveLoadGame {
                 "( `" + PLAYER_DATA_NAME_COLUMN + "` TEXT NOT NULL, " +
                 "`" + PLAYER_DATA_COMMISSIONS_COMPLETED_COLUMN + "` INTEGER NOT NULL, " +
                 "`" + PLAYER_DATA_WALLET_COLUMN + "` REAL )";
-        String createCommissionsTable = "CREATE TABLE IF NOT EXISTS \"commissions\" " +
-                "( `number` INTEGER NOT NULL, " +
-                "`product id` INTEGER NOT NULL, " +
-                "`required curse status` INTEGER NOT NULL )";
-        String createMagicalComponentsTable = "CREATE TABLE IF NOT EXISTS \"magical components\" " +
-                "( `component id` INTEGER NOT NULL, " +
-                "`material` INTEGER, " +
-                "`quality` INTEGER, " +
-                "`cursed` INTEGER )";
-        String createMagicalItemsTable = "CREATE TABLE IF NOT EXISTS \"magical items\" " +
-                "( `item id` INTEGER NOT NULL, " +
-                "`cursed` INTEGER, " +
-                "`component1 material` INTEGER, " +
-                "`component1 quality` INTEGER, " +
-                "`component2 material` INTEGER, " +
-                "`component2 quality` INTEGER, " +
-                "`component3 material` INTEGER, " +
-                "`component3 quality` INTEGER )";
-        String createMagicalMaterialsTable = "CREATE TABLE IF NOT EXISTS \"magical materials\" " +
-                "( `material id` INTEGER NOT NULL, " +
-                "`quality` INTEGER, " +
-                "`mass` REAL, " +
-                "`cursed` INTEGER )";
-        String createMarketTable = "CREATE TABLE IF NOT EXISTS \"market\" " +
-                "( `item id` INTEGER NOT NULL, " +
-                "`cursed` INTEGER, " +
-                "`component1 material` INTEGER, " +
-                "`component1 quality` INTEGER, " +
-                "`component2 material` INTEGER, " +
-                "`component2 quality` INTEGER, " +
-                "`component3 material` INTEGER, " +
-                "`component3 quality` INTEGER )";
+        String createCommissionsTable = "CREATE TABLE IF NOT EXISTS \""+ COMMISSIONS_TABLE +"\" " +
+                "( `" + COMMISSIONS_NUMBER_COLUMN + "` INTEGER NOT NULL, " +
+                "`" + COMMISSIONS_PRODUCT_ID_COLUMN + "` INTEGER NOT NULL, " +
+                "`" + COMMISSIONS_REQUIRED_CURSE_STATUS_COLUMN + "` INTEGER NOT NULL )";
+        String createMagicalComponentsTable = "CREATE TABLE IF NOT EXISTS \"" + MAGICAL_COMPONENTS_TABLE + "\" " +
+                "( `" + MAGICAL_COMPONENTS_COMPONENT_ID_COLUMN + "` INTEGER NOT NULL, " +
+                "`" + MAGICAL_COMPONENTS_MATERIAL_COLUMN + "` INTEGER, " +
+                "`" + MAGICAL_COMPONENTS_QUALITY_COLUMN + "` INTEGER, " +
+                "`" + MAGICAL_COMPONENTS_CURSED_COLUMN + "` INTEGER )";
+        String createMagicalItemsTable = "CREATE TABLE IF NOT EXISTS \"" + MAGICAL_ITEMS_TABLE + "\" " +
+                "( `" + MAGICAL_ITEMS_ITEM_ID_COLUMN + "` INTEGER NOT NULL, " +
+                "`" + MAGICAL_ITEMS_CURSED_COLUMN + "` INTEGER, " +
+                "`" + MAGICAL_ITEMS_COMPONENTS_MATERIALS_COLUMN + "` INTEGER, " +
+                "`" + MAGICAL_ITEMS_COMPONENTS_QUALITIES_COLUMN + "` INTEGER )";
+        String createMagicalMaterialsTable = "CREATE TABLE IF NOT EXISTS \"" + MAGICAL_MATERIALS_TABLE + "\" " +
+                "( `" + MAGICAL_MATERIALS_MATERIAL_ID_COLUMN + "` INTEGER NOT NULL, " +
+                "`" + MAGICAL_MATERIALS_QUALITY_COLUMN + "` INTEGER, " +
+                "`" + MAGICAL_MATERIALS_MASS_COLUMN + "` REAL, " +
+                "`" + MAGICAL_MATERIALS_CURSED_COLUMN + "` INTEGER )";
+        String createMarketTable = "CREATE TABLE IF NOT EXISTS \"" + MARKET_TABLE + "\" " +
+                "( `" + MARKET_ITEM_ID_COLUMN + "` INTEGER NOT NULL, " +
+                "`" + MARKET_CURSED_COLUMN + "` INTEGER, " +
+                "`" + MARKET_COMPONENTS_MATERIALS_COLUMN + "` INTEGER, " +
+                "`" + MARKET_COMPONENTS_QUALITIES_COLUMN + "` INTEGER )";
 
         try {
             Statement statement = connection.createStatement();
@@ -420,22 +388,17 @@ public class SaveLoadGame {
                 insertItem.setInt(1, itemID);
                 insertItem.setInt(2, cursed);
 
-                int i = 3;
+                // due to varying number of components an Item can has
+                // all their IDs and quality values are saved as Strings of numbers
+                // separated by spaces
+                StringBuilder componentsMaterials = new StringBuilder();
+                StringBuilder componentsQualities = new StringBuilder();
                 for (MagicalItemComponent component : magicalItem.getComponents()) {
-                    // 3 - component1 material index
-                    // 4 - component1 quality index
-                    // 5 - component2 material index
-                    // 6 - component2 quality index
-                    // 7 - component3 material index
-                    // 8 - component3 quality index
-                    int componentMaterial = Integer.parseInt(component.getMaterialID());
-                    int componentQuality = component.getQuality().getValue();
-
-                    insertItem.setInt(i, componentMaterial);
-                    insertItem.setInt(i+1, componentQuality);
-
-                    i += 2;
+                    componentsMaterials.append(component.getMaterialID() + " ");
+                    componentsQualities.append(component.getQuality().getValue() + " ");
                 }
+                insertItem.setString(3, componentsMaterials.toString());
+                insertItem.setString(4, componentsQualities.toString());
 
                 insertItem.executeUpdate();
             }
@@ -478,22 +441,17 @@ public class SaveLoadGame {
                 insertMarketItem.setInt(1, itemID);
                 insertMarketItem.setInt(2, cursed);
 
-                int i = 3;
+                // due to varying number of components an Item can has
+                // all their IDs and quality values are saved as Strings of numbers
+                // separated by spaces
+                StringBuilder componentsMaterials = new StringBuilder();
+                StringBuilder componentsQualities = new StringBuilder();
                 for (MagicalItemComponent component : marketItem.getComponents()) {
-                    // 3 - component1 material index
-                    // 4 - component1 quality index
-                    // 5 - component2 material index
-                    // 6 - component2 quality index
-                    // 7 - component3 material index
-                    // 8 - component3 quality index
-                    int componentMaterial = Integer.parseInt(component.getMaterialID());
-                    int componentQuality = component.getQuality().getValue();
-
-                    insertMarketItem.setInt(i, componentMaterial);
-                    insertMarketItem.setInt(i+1, componentQuality);
-
-                    i += 2;
+                    componentsMaterials.append(component.getMaterialID() + " ");
+                    componentsQualities.append(component.getQuality().getValue() + " ");
                 }
+                insertMarketItem.setString(3, componentsMaterials.toString());
+                insertMarketItem.setString(4, componentsQualities.toString());
 
                 insertMarketItem.executeUpdate();
 
