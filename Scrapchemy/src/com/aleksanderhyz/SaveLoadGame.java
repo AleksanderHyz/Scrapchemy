@@ -97,8 +97,6 @@ public class SaveLoadGame {
 
     /* prepared statements: */
 
-    /* saving data: */
-
     // insert Player data
     private static final String INSERT_PLAYER_DATA =
             "INSERT INTO [" + PLAYER_DATA_TABLE + "] " +
@@ -165,11 +163,15 @@ public class SaveLoadGame {
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private PreparedStatement insertMarketItem;
 
+    // delete all table data
+    private static final String DELETE_ALL = "DELETE FROM ";
+
     private Connection connection;
 
+    
     // opening and closing save file
 
-    public boolean open(String playerName) {
+    private boolean open(String playerName) {
         String saveFileName = playerName + ".db";
 
         try {
@@ -193,7 +195,7 @@ public class SaveLoadGame {
         }
     }
 
-    public void close() {
+    private void close() {
         try {
             if (insertPlayerData != null) {
                 insertPlayerData.close();
@@ -241,17 +243,24 @@ public class SaveLoadGame {
                 // set Auto Commit to false to perform rollback in case error occurs in the middle of saving data
                 connection.setAutoCommit(false);
 
-                if (
-                        // fill the tables with records:
-                        savePlayerData(player) &&
-                        saveCommissions(player) &&
-                        saveMagicalComponents(player) &&
-                        saveMagicalItems(player) &&
-                        saveMagicalMaterial(player) &&
-                        saveMarket(player)
-                        ) {
-                    saveGameStatus = SaveGameStatus.SAVED_SUCCESSFULLY;
-                }
+                // clear old save records
+                connection.prepareStatement(DELETE_ALL + "[" + PLAYER_DATA_TABLE + "]").executeUpdate();
+                connection.prepareStatement(DELETE_ALL + "[" + COMMISSIONS_TABLE + "]").executeUpdate();
+                connection.prepareStatement(DELETE_ALL + "[" + MAGICAL_COMPONENTS_TABLE + "]").executeUpdate();
+                connection.prepareStatement(DELETE_ALL + "[" + MAGICAL_ITEMS_TABLE + "]").executeUpdate();
+                connection.prepareStatement(DELETE_ALL + "[" + MAGICAL_MATERIALS_TABLE + "]").executeUpdate();
+                connection.prepareStatement(DELETE_ALL + "[" + MARKET_TABLE + "]").executeUpdate();
+
+                // fill the tables with records:
+                savePlayerData(player);
+                saveCommissions(player);
+                saveMagicalComponents(player);
+                saveMagicalItems(player);
+                saveMagicalMaterial(player);
+                saveMarket(player);
+
+                saveGameStatus = SaveGameStatus.SAVED_SUCCESSFULLY;
+
 
             } catch (Exception e0) {
                 // catching any kind of exception that caused saving game to fail
@@ -276,9 +285,7 @@ public class SaveLoadGame {
         return saveGameStatus;
     }
 
-    private boolean createSaveFileTables() {
-
-        boolean success = true;
+    private void createSaveFileTables() throws SQLException {
 
         String createPlayerDataTable = "CREATE TABLE IF NOT EXISTS \"" + PLAYER_DATA_TABLE + "\" " +
                 "( `" + PLAYER_DATA_NAME_COLUMN + "` TEXT NOT NULL, " +
@@ -327,17 +334,11 @@ public class SaveLoadGame {
             statement.execute(createMarketTable);
 
         } catch (SQLException e) {
-            success = false;
-            System.out.println("Couldn't create the tables: " + e.getMessage());
+            throw new SQLException("Couldn't create the tables: " + e.getMessage());
         }
-
-        return success;
     }
 
-    private boolean savePlayerData(Player player) {
-
-        boolean success = true;
-
+    private void savePlayerData(Player player) throws Exception{
         try {
 
             String name = player.getName();
@@ -351,17 +352,11 @@ public class SaveLoadGame {
             insertPlayerData.executeUpdate();
 
         } catch (SQLException e) {
-            success = false;
-            System.out.println("Couldn't save Player data: " + e.getMessage());
+            throw new Exception("Couldn't save Player data: " + e.getMessage());
         }
-
-        return success;
     }
 
-    private boolean saveCommissions(Player player) {
-
-        boolean success = true;
-
+    private void saveCommissions(Player player) throws Exception{
         try {
             List<MagicalProduct> commissions = new ArrayList<>(player.getCommissionList());
             for (MagicalProduct commission : commissions) {
@@ -388,17 +383,11 @@ public class SaveLoadGame {
                 insertCommission.executeUpdate();
             }
         } catch (SQLException e) {
-            success = false;
-            System.out.println("Couldn't save commissions: " + e.getMessage());
+            throw new Exception("Couldn't save commissions: " + e.getMessage());
         }
-
-        return success;
     }
 
-    private boolean saveMagicalComponents(Player player) {
-
-        boolean success = true;
-
+    private void saveMagicalComponents(Player player) throws Exception {
         try {
             List<MagicalItemComponent> magicalItemComponents = new ArrayList<>(player.getMagicalComponents());
             for (MagicalItemComponent component : magicalItemComponents) {
@@ -416,17 +405,11 @@ public class SaveLoadGame {
                 insertComponent.executeUpdate();
             }
         } catch (SQLException e) {
-            success = false;
-            System.out.println("Couldn't save components: " + e.getMessage());
+            throw new Exception("Couldn't save components: " + e.getMessage());
         }
-
-        return success;
     }
 
-    private boolean saveMagicalItems(Player player) {
-
-        boolean success = true;
-
+    private void saveMagicalItems(Player player) throws Exception {
         try {
             List<MagicalItem> magicalItems = new ArrayList<>(player.getMagicalItems());
             for (MagicalItem magicalItem : magicalItems) {
@@ -457,17 +440,11 @@ public class SaveLoadGame {
                 insertItem.executeUpdate();
             }
         } catch (SQLException e) {
-            success = false;
-            System.out.println("Couldn't save items: " + e.getMessage());
+            throw new Exception("Couldn't save items: " + e.getMessage());
         }
-
-        return success;
     }
 
-    private boolean saveMagicalMaterial(Player player) {
-
-        boolean success = true;
-
+    private void saveMagicalMaterial(Player player) throws Exception{
         try {
             List<MagicalMaterial> magicalMaterials = new ArrayList<>(player.getMagicalMaterials());
             for (MagicalMaterial magicalMaterial : magicalMaterials) {
@@ -486,17 +463,11 @@ public class SaveLoadGame {
             }
 
         } catch (SQLException e) {
-            success = false;
-            System.out.println("Couldn't save materials: " + e.getMessage());
+            throw new Exception("Couldn't save materials: " + e.getMessage());
         }
-
-        return success;
     }
 
-    private boolean saveMarket(Player player) {
-
-        boolean success = true;
-
+    private void saveMarket(Player player) throws Exception {
         try {
             List<MagicalItem> marketItems = new ArrayList<>(player.getMarket());
             for (MagicalItem marketItem : marketItems) {
@@ -528,10 +499,7 @@ public class SaveLoadGame {
 
             }
         } catch (SQLException e) {
-            success = false;
-            System.out.println("Couldn't save market: " + e.getMessage());
+            throw new Exception("Couldn't save market: " + e.getMessage());
         }
-
-        return success;
     }
 }

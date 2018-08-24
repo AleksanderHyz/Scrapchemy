@@ -92,7 +92,7 @@ public class Main {
 //    // in order to delete all chosen materials from it during the process of choosing ingredients
 //    // but without deleting them from inventory in case product in the end is not created
 //    //List<MagicalMaterial> temporaryMaterialList = this.magicalMaterials;
-//
+// TO BE MADE
 
     // print separator:
     private static void printSeparator() {
